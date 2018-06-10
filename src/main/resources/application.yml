@@ -1,0 +1,18 @@
+server:
+  port: 8809
+  servlet:
+    contextPath: /api
+
+spring:
+  application:
+    name: miami-publish
+
+engine:
+  type: jena2gongan
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://47.95.96.227:8861/eureka/
