@@ -1,3 +1,18 @@
 jena:
   modelName: biluProd
   fusekiURI: http://172.19.10.40/knowledge
+
+spring:
+  datasource:
+    url: jdbc:mysql://47.104.8.27/rizhaogongan
+    username: root
+    password: admin
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+    show-sql: true

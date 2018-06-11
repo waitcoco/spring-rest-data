@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: miami-publish
+  labels:
+    app: miami-publish
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8809
+  selector:
+    app: miami-publish
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: miami-publish
+  labels:
+    app: miami-publish
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: miami-publish
+  template:
+    metadata:
+      labels:
+        app: miami-publish
+    spec:
+      containers:
+      - name: miami-publish
+        image: IMAGE_TAG_HERE
+        ports:
+        - containerPort: 8809
+        resources:
+          requests:
+            cpu: 100m
+            memory: 2Gi
+          limits:
+            cpu: 500m
+            memory: 2Gi
+        args:
+          - --spring.profiles.active=jena2gonganProd

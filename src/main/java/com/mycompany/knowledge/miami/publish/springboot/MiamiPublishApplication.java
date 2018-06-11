@@ -20,7 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 })
 @EnableJpaRepositories("com.mycompany.knowledge.miami.publish.repository")
 @EntityScan("com.mycompany.knowledge.miami.publish.model.gongan")
-@EnableJpaAuditing
+//@EnableJpaAuditing
 public class MiamiPublishApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MiamiPublishApplication.class, args);

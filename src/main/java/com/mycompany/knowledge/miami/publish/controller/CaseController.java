@@ -3,9 +3,14 @@ package com.mycompany.knowledge.miami.publish.controller;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
 import io.swagger.annotations.Api;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/cases")
@@ -23,8 +28,17 @@ public class CaseController {
     }
 
     @GetMapping("/all")
-    public Iterable<Case> getAllUsers() {
+    @Transactional
+    public List<String> getAllCases() {
         // This returns a JSON or XML with the users
-        return caseRepository.findAll();
+        List<String> cases = new ArrayList<>();
+        caseRepository.findAll().forEach(c->cases.add(c.getName()));
+        return cases;
+    }
+
+
+    @GetMapping("/size")
+    public long getSize() {
+     return caseRepository.count();
     }
 }
