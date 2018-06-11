@@ -4,6 +4,7 @@ import com.mycompany.knowledge.miami.publish.engine.PublishEngine;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +21,9 @@ public class PublishController {
     @GetMapping("/batchProcess")
     public void publish() {
         publishEngine.publish();
+    }
+
+    @GetMapping("/process/{modelName}")
+    public void conflateModel(@PathVariable("modelName") String modelName) {
     }
 }
