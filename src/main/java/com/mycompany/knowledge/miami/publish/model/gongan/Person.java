@@ -1,8 +1,6 @@
 package com.mycompany.knowledge.miami.publish.model.gongan;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,13 +8,15 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@Table(name = "person")
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String name;
-    //@ManyToOne
-    //private Bilu bilu;
+    @ManyToOne
+    @JoinColumn(name = "bilu_id")
+    private Bilu bilu;
     public Person() {
 
     }

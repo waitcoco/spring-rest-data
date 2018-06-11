@@ -24,16 +24,15 @@ public class RepositoryTest {
 
     @Test
     public void testSaveCase() {
-        Case aCase = new Case();
-        aCase.setCaseName("测试案件");
+        Case aCase = new Case("sdddd");
+        aCase.setName("测试案件");
         //aCase.setId(123l);
-        caseRepository.save(aCase);
         Bilu bilu = new Bilu();
         bilu.setName("测试笔录");
-        //bilu.setACase(aCase);
+        bilu.setACase(aCase);
         List<Bilu> bilus = new ArrayList<Bilu>();
         bilus.add(bilu);
-        //aCase.setBilus(bilus);
+        aCase.setBilus(bilus);
         caseRepository.save(aCase);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CaseRepository extends CrudRepository<Case, Long>{
+public interface CaseRepository extends CrudRepository<Case, String>{
 //    @Query("from Case aCase where aCase.caseName=:caseName")
 //    Case findByName(String caseName);
 }

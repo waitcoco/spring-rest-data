@@ -1,24 +1,25 @@
 package com.mycompany.knowledge.miami.publish.model.gongan;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
+
+@Entity
 @Getter
 @Setter
-@Entity
+@Table(name = "case_repo")
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class Case {
+    @NonNull
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String caseName;
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
+    private String name;
     //@OneToMany(targetEntity=Bilu.class, mappedBy = "aCase", fetch= FetchType.EAGER)
-    //private List<Bilu> bilus;
-    public Case() {
-
-    }
+    @OneToMany(mappedBy = "aCase", cascade = CascadeType.ALL)
+    private List<Bilu> bilus;
 }
