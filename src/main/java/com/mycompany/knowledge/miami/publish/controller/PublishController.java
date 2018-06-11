@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping("/publish")
 @Api(description = "publish process APIs")
@@ -24,6 +20,6 @@ public class PublishController {
     }
 
     @GetMapping("/process/{modelName}")
-    public void conflateModel(@PathVariable("modelName") String modelName) {
+    public void publishModel(@PathVariable("modelName") String modelName) {
     }
 }
