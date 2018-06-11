@@ -27,7 +27,6 @@ node {
 
   buildEnv.inside {
     stage('build') {
-      sh '''mvn install:install-file -Dfile=`pwd`/src/main/resources/lib/ojdbc6.jar -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.1 -Dpackaging=jar'''
       sh '''mvn clean package -DskipTests'''
     }
   }
