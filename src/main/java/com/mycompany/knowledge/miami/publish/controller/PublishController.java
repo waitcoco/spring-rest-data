@@ -15,8 +15,8 @@ public class PublishController {
     @Autowired
     PublishEngine publishEngine;
     @GetMapping("/batchProcess")
-    public void publish() {
-        publishEngine.publish();
+    public String publish() {
+        return publishEngine.publish();
     }
 
     @GetMapping("/process/{modelName}")

@@ -9,13 +9,16 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private DatasetAccessor accessor;
     private String fusekiURI;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
+    private String inputModelName;
     public JenaGonganPublishEngine(String fusekiURI, String modelName) {
         this.fusekiURI = fusekiURI;
         this.accessor = DatasetAccessorFactory.createHTTP(fusekiURI);
+        this.inputModelName = modelName;
     }
 
     @Override
-    public void publish() {
+    public String publish() {
         logger.info("In jena gongan publish engine");
+        return this.inputModelName;
     }
 }
