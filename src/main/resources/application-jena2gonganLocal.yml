@@ -1,10 +1,18 @@
 jena:
-  modelName: biluFusionDev.v2
-  fusekiURI: http://172.19.10.40/knowledge
+  modelName: biluFusionLocal.v2
+  fusekiURI: http://localhost:3330/knowledge
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8861/eureka/
 
 spring:
   datasource:
-    url: jdbc:mysql://47.104.8.27/rizhaogongan
+    url: jdbc:mysql://localhost:6603/rizhaogongan
     username: root
     password: admin
     driver-class-name: com.mysql.jdbc.Driver
