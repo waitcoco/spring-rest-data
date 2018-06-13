@@ -1,6 +1,6 @@
 jena:
   modelName: biluProdFusion
-  fusekiURI: http://localhost:864/knowledge
+  fusekiURI: http://DEPLOY_TARGET_MACHINE:864/knowledge
 
 spring:
   datasource:
@@ -21,4 +21,4 @@ eureka:
     prefer-ip-address: true
   client:
     serviceUrl:
-      defaultZone:  http://localhost:862/eureka/
+      defaultZone:  http://DEPLOY_TARGET_MACHINE:862/eureka/
