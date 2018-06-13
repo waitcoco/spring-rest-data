@@ -4,7 +4,7 @@ jena:
 
 spring:
   datasource:
-    url: jdbc:mysql://miami-mysql:q:3306/rizhao
+    url: jdbc:mysql://miami-mysql:3306/rizhao
     username: root
     password: miami_rizhao
     driver-class-name: com.mysql.jdbc.Driver
