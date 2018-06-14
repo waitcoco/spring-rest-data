@@ -14,10 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @ComponentScan("com.mycompany.knowledge.miami")
 @EnableEurekaClient
-@SpringBootApplication(exclude = {
-        MongoAutoConfiguration.class,
-        MongoDataAutoConfiguration.class
-})
+@SpringBootApplication
 @EnableJpaRepositories("com.mycompany.knowledge.miami.publish.repository")
 @EntityScan("com.mycompany.knowledge.miami.publish.model.gongan")
 //@EnableJpaAuditing
