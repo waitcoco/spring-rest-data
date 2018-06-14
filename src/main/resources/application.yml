@@ -8,7 +8,7 @@ spring:
     name: miami-publish
   data:
     mongodb:
-      uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101
+      uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
 engine:
   type: jena2gongan
 

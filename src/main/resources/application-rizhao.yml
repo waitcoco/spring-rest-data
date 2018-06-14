@@ -17,7 +17,7 @@ spring:
     show-sql: true
   data:
     mongodb:
-      uri: mongodb://miami-mongodb:27017
+      uri: mongodb://miami-mongodb:27017/biluProdRizhao
 
 eureka:
   instance:
