@@ -6,7 +6,9 @@ server:
 spring:
   application:
     name: miami-publish
-
+  data:
+    mongodb:
+      uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
 engine:
   type: jena2gongan
 
@@ -16,3 +18,15 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://47.95.96.227:8861/eureka/
+
+miami:
+  publish:
+    mongodb:
+      database: zhinengtiaojie
+      collection:
+        bilu: tiaojieDocInfo
+    elasticsearch:
+      host: http://192.168.177.201:9200,http://192.168.177.227:9200
+      index: bilu
+      type: doc
+      batchSize: 1000
