@@ -36,11 +36,22 @@ public class PublishController {
 
     @PostMapping("/ES")
     public void processBatch( @RequestBody List<String> mongoIds) throws IOException {
+        uploadBiluToEs(mongoIds);
+    }
+
+    @PostMapping("/ES/full")
+    public void processBatch() throws IOException {
+        uploadBiluToEs(null);
+    }
+
+    private void uploadBiluToEs(List<String> mongoIds) throws IOException {
         if (!esPublishEngine.indexExists()) {
             esPublishEngine.createIndex("contentStream", "type=text,analyzer=cjk");
         }
 
-        mongoBiluRepo.getBiluList(mongoIds).forEach(bilu -> {
+        val biluList = mongoIds == null ? mongoBiluRepo.getBiluList() : mongoBiluRepo.getBiluList(mongoIds);
+
+        biluList.forEach(bilu -> {
             val json = new JsonParser().parse(bilu).getAsJsonObject();
             val id = json.get("_id").getAsString();
             json.remove("_id");
