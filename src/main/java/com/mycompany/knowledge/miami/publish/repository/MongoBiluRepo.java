@@ -24,4 +24,8 @@ public class MongoBiluRepo {
     public Iterable<String> getBiluList(Iterable<String> ids) {
         return collection.find(in("_id", ids)).map(Document::toJson);
     }
+
+    public Iterable<String> getBiluList() {
+        return collection.find().map(Document::toJson);
+    }
 }
