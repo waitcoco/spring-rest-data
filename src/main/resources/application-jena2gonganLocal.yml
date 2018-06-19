@@ -1,5 +1,5 @@
 jena:
-  modelName: biluFusionLocal.v2
+  modelName: biluFusionLocal
   fusekiURI: http://localhost:3330/knowledge
 
 
@@ -11,6 +11,9 @@ eureka:
       defaultZone: http://localhost:8861/eureka/
 
 spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:password@localhost:27017/admin
   datasource:
     url: jdbc:mysql://localhost:6603/rizhaogongan
     username: root
@@ -24,3 +27,12 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
     show-sql: true
+
+miami:
+  publish:
+    mongodb:
+      database: zhinengtiaojie
+      collection:
+        bilu: tiaojieDocInfoLocal
+    elasticsearch:
+      host: http://localhost:9200
