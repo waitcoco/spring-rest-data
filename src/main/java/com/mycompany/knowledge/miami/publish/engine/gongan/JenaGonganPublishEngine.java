@@ -1,21 +1,41 @@
 package com.mycompany.knowledge.miami.publish.engine.gongan;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import com.mycompany.knowledge.miami.publish.engine.PublishEngine;
 import com.mycompany.knowledge.miami.publish.jena.FusekiJenaLibrary;
+import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
+import com.mycompany.knowledge.miami.publish.model.gongan.Case;
+import com.mycompany.knowledge.miami.publish.model.gongan.Person;
+import com.mycompany.knowledge.miami.publish.model.gongan.Relation;
+import com.mycompany.knowledge.miami.publish.repository.BiluRepository;
+import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
+import com.mycompany.knowledge.miami.publish.repository.PersonRepository;
+import com.mycompany.knowledge.miami.publish.repository.RelationRepository;
 import lombok.val;
-import org.apache.jena.query.DatasetAccessor;
-import org.apache.jena.query.DatasetAccessorFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JenaGonganPublishEngine implements PublishEngine{
 //    private DatasetAccessor accessor;
+    @Autowired
+    private BiluRepository biluRepository;
+    @Autowired
+    private CaseRepository caseRepository;
+    @Autowired
+    private PersonRepository personRepository;
+    @Autowired
+    private RelationRepository relationRepository;
+
     public FusekiJenaLibrary fusekiJenaLibrary;
     private String fusekiURI;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
@@ -30,11 +50,12 @@ public class JenaGonganPublishEngine implements PublishEngine{
     @Override
     public String publish() {
         logger.info("In jena gongan publish engine");
-        return this.inputModelName;
+        publishCases();
+        return "finished";
     }
 
 
-    public void PublishCases(){
+    public void publishCases(){
         val model = fusekiJenaLibrary.getModel(inputModelName);
         if (model == null) {
             throw new RuntimeException("Can not get model " + inputModelName);
@@ -45,81 +66,111 @@ public class JenaGonganPublishEngine implements PublishEngine{
         while (iterator.hasNext()) {
             Resource resource = iterator.next().getSubject();
 
+            CaseBase aCaseBase = new CaseBase();
             Case aCase = new Case();
-
-            aCase.setSubjectId(resource.toString());
-
+            aCaseBase.setSubjectId(resource.toString());
+            aCase.setId(resource.toString());
             List<String> csIds = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.id");
             if (csIds.size() > 0)
+                aCaseBase.setCaseId(csIds.get(0));
                 aCase.setCaseId(csIds.get(0));
 
             List<String> csNames = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.name");
             if (csNames.size() > 0)
-                aCase.setCaseName(csNames.get(0));
+                aCaseBase.setCaseName(csNames.get(0));
+                aCase.setName(csNames.get(0));
 
             List<String> csTypes = fusekiJenaLibrary.getStringValueBySP(model, resource, "gongan:gongan.case.category");
             if (csTypes.size() > 0)
-                aCase.setCaseType(String.join(",", csTypes));
+                aCaseBase.setCaseType(String.join(",", csTypes));
+                aCase.setType(String.join(",",csTypes));
 
             val biluIter1 = fusekiJenaLibrary.getStatementsBySP(model, resource, "gongan:gongan.case.bilu");
             while (biluIter1.hasNext()) {
                 Resource biluResource = biluIter1.next().getResource();
 //                if (!biluCache.containsKey(biluResource)) {
-//                    Bilu bilu = getBiluInfo(model, biluResource);
+//                   BiluBase bilu = getBiluInfo(model, biluResource);
 //                    biluCache.put(biluResource.toString(), bilu);
 //                }
 
                 // todo @jinzhao
                 // 需要在这个地方查bilu的表，看bilu是否已经存在
-                Bilu bilu = getBiluInfo(model, biluResource);
-                aCase.getBilus().add(bilu);
 
-                for (String pSubjectId : bilu.getConnections().keySet()) {
-                    if (!aCase.getConnections().containsKey(pSubjectId))
-                        aCase.getConnections().put(pSubjectId, bilu.getConnections().get(pSubjectId));
+                BiluBase biluBase = getBiluInfo(model, biluResource);
+                aCaseBase.getBilus().add(biluBase);
+
+                for (String pSubjectId : biluBase.getConnections().keySet()) {
+                    if (!aCaseBase.getConnections().containsKey(pSubjectId))
+                        aCaseBase.getConnections().put(pSubjectId, biluBase.getConnections().get(pSubjectId));
                     else {
-                        if(!aCase.getConnections().get(pSubjectId).contains(bilu.getConnections().get(pSubjectId)))
-                            aCase.getConnections().put(pSubjectId, bilu.getConnections().get(pSubjectId) + "；" + aCase.getConnections().get(pSubjectId));
+                        if(!aCaseBase.getConnections().get(pSubjectId).contains(biluBase.getConnections().get(pSubjectId)))
+                            aCaseBase.getConnections().put(pSubjectId, biluBase.getConnections().get(pSubjectId) + "；" + aCaseBase.getConnections().get(pSubjectId));
                     }
                 }
             }
+            val biluList = new ArrayList<Bilu>();
+            for(val biluBase:aCaseBase.getBilus()){
+                val bilu  = new Bilu();
+                Gson gson = new Gson();
+                bilu.setContent(biluBase.getContent());
+                bilu.setName(biluBase.getName());
+                bilu.setBiluId(biluBase.getBiluId());
+                bilu.setSubjectId(biluBase.getSubjectId());
+                bilu.setACase(aCase);
+                bilu.setBankcards(gson.toJson(biluBase.getBankCards()));
+                bilu.setPhones(gson.toJson(biluBase.getPhones()));
+                biluList.add(bilu);
+                biluRepository.save(bilu);
+                for(val perosn : biluBase.getPerson()){
+                    int i = 0;
+                    val relation = new Relation();
+                    relation.setSubjectId(i);
+                    i++;
+                    relation.setPersonSubjectId(perosn.getSubjectId());
+                    relation.setBiluSubjectId(biluBase.getSubjectId());
+                    relation.setCaseSubjectId(aCase.getId());
+                    relationRepository.save(relation);
+                }
+            }
+            aCase.setBilus(biluList);
+            caseRepository.save(aCase);
         }
     }
 
-    private Bilu getBiluInfo(Model model, Resource resource) {
-        Bilu bilu = new Bilu();
+    private BiluBase getBiluInfo(Model model, Resource resource) {
+        BiluBase biluBase = new BiluBase();
 
-        bilu.setSubjectId(resource.toString());
+        biluBase.setSubjectId(resource.toString());
 
         //bilu id
         List<String> bilu_id_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.id");
-        bilu.setBiluId(bilu_id_list.size() > 0 ? bilu_id_list.get(0) : "");
+        biluBase.setBiluId(bilu_id_list.size() > 0 ? bilu_id_list.get(0) : "");
 
         //bilu name
         List<String> bilu_name_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.name");
-        bilu.setName(bilu_name_list.size() > 0 ? bilu_name_list.get(0) : "");
+        biluBase.setName(bilu_name_list.size() > 0 ? bilu_name_list.get(0) : "");
 
         //bilu content
         List<String> bilu_content_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:common.document.contentStream");
-        bilu.setContent(bilu_content_list.size() > 0 ? bilu_content_list.get(0) : "");
+        biluBase.setContent(bilu_content_list.size() > 0 ? bilu_content_list.get(0) : "");
 
-        // set persons
+        // set personBases
         val entities = Lists.newArrayList(fusekiJenaLibrary.getStatementsBySP(model, resource, "gongan:gongan.bilu.entity")).stream().map(s -> s.getResource().toString()).distinct().collect(Collectors.toList());
         val persons = Lists.newArrayList(fusekiJenaLibrary.getStatementsByPOValue(model, "common:type.object.type", "common:person.person")).stream().map(s -> s.getSubject().toString()).distinct().collect(Collectors.toList());
         persons.retainAll(entities);
 
         List<String> biluConnections = Lists.newArrayList(fusekiJenaLibrary.getStatementsByPO(model, "common:common.connection.from", resource)).stream().map(s -> s.getSubject().toString()).distinct().collect(Collectors.toList());
         for (String personSubject : persons) {
-            // set person information
+            // set personBase information
 //            if (!personCache.containsKey(personSubject)) {
-//                Person person = getPersonInfo(model, model.getResource(personSubject));
-//                personCache.put(personSubject, person);
+//                PersonBase personBase = getPersonInfo(model, model.getResource(personSubject));
+//                personCache.put(personSubject, personBase);
 //            }
 
             // todo @jinzhao
             // 需要在这个地方查person的表，看person是否已经存在
             Person person = getPersonInfo(model, model.getResource(personSubject));
-            bilu.getPersons().add(person);
+            biluBase.getPerson().add(person);
 
 
             // set connection
@@ -144,7 +195,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
             int roleLength = role.length();
             if (roleLength > 0) {
-                bilu.getConnections().put(personSubject, role.substring(0, roleLength - 1));
+                biluBase.getConnections().put(personSubject, role.substring(0, roleLength - 1));
             }
         }
 
@@ -157,7 +208,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
         for (String phone : phones) {
             List<String> phoneNums = fusekiJenaLibrary.getStringValueBySP(model, model.getResource(phone), "common:thing.phone.phoneNumber");
             if (phoneNums.size() > 0)
-                bilu.getPhones().put(phone, phoneNums.get(0));
+                biluBase.getPhones().put(phone, phoneNums.get(0));
         }
         // set bank cards
         val bankCards = Lists.newArrayList(fusekiJenaLibrary.getStatementsByPOValue(model, "common:type.object.type", "common:thing.bankcard")).stream().map(s -> s.getSubject().toString()).distinct().collect(Collectors.toList());
@@ -165,70 +216,79 @@ public class JenaGonganPublishEngine implements PublishEngine{
         for (String bankCard : bankCards) {
             List<String> bankCardNums = fusekiJenaLibrary.getStringValueBySP(model, model.getResource(bankCard), "common:thing.bankcard.bankCardId");
             if (bankCardNums.size() > 0)
-                bilu.getBankCards().put(bankCard, bankCardNums.get(0));
+                biluBase.getBankCards().put(bankCard, bankCardNums.get(0));
         }
 
-        return bilu;
+        return biluBase;
     }
 
     private Person getPersonInfo(Model model, Resource resource) {
-//        Person person = personRelationCache.getOrDefault(resource.toString(), null);
+//        PersonBase personBase = personRelationCache.getOrDefault(resource.toString(), null);
 
         // todo
-        // 需要在这个地方查person 表，看这个person是否已经被处理了；
-        Person person = null;
-        if(person == null) {
-            person = new Person();
+        // 需要在这个地方查person 表，看这个person是否已经有了；
+        PersonBase personBase = null;
+        if(personBase == null) {
+            personBase = new PersonBase();
 
-            person.setSubjectId(resource.toString());
+            personBase.setSubjectId(resource.toString());
             val pNames = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.name");
             if (pNames.size() > 0)
-                person.setName(pNames.get(0));
+                personBase.setName(pNames.get(0));
 
-            val personIdentities = fusekiJenaLibrary.getStatementsBySP(model, resource, "common:person.person.identification");
+            val personIdentities = fusekiJenaLibrary.getStatementsBySP(model, resource, "common:personBase.personBase.identification");
             if (personIdentities.hasNext()) {
-                val personIds = fusekiJenaLibrary.getStringValueBySP(model, personIdentities.next().getResource(), "common:person.identification.number");
+                val personIds = fusekiJenaLibrary.getStringValueBySP(model, personIdentities.next().getResource(), "common:personBase.identification.number");
                 if (personIds.size() > 0)
-                    person.setIdentity(personIds.get(0));
+                    personBase.setIdentity(personIds.get(0));
             }
 
             // set bilus
             val relatedBilus = Lists.newArrayList(fusekiJenaLibrary.getStatementsByPO(model, "gongan:gongan.bilu.entity", resource))
                     .stream().map(s -> s.getSubject().toString()).distinct().collect(Collectors.toList());
 
-            person.setBiluList(relatedBilus);
+            personBase.setBiluList(relatedBilus);
 
             // set cases
             val relatedCases = Lists.newArrayList(fusekiJenaLibrary.getStatementsByBatchPO(model, "gongan:gongan.case.bilu", new HashSet<>(relatedBilus)))
                     .stream().map(s -> s.getSubject().toString()).distinct().collect(Collectors.toList());
 
-            person.setCaseList(relatedCases);
+            personBase.setCaseList(relatedCases);
         }
 
-        if(person.getPhone() == null || person.getPhone().isEmpty()) {
-            val contactIters = fusekiJenaLibrary.getStatementsBySP(model, resource, "common:person.person.contact");
+        if(personBase.getPhone() == null || personBase.getPhone().isEmpty()) {
+            val contactIters = fusekiJenaLibrary.getStatementsBySP(model, resource, "common:personBase.personBase.contact");
             if (contactIters.hasNext()) {
-                val contacts = fusekiJenaLibrary.getStringValueBySP(model, contactIters.next().getResource(), "common:person.contact.number");
+                val contacts = fusekiJenaLibrary.getStringValueBySP(model, contactIters.next().getResource(), "common:personBase.contact.number");
                 if (contacts.size() > 0)
-                    person.setPhone(contacts.get(0));
+                    personBase.setPhone(contacts.get(0));
             }
         }
 
-        if(person.getBirthDay() == null || person.getBirthDay().isEmpty()) {
-            val birthdays = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:person.person.birthDate");
+        if(personBase.getBirthDay() == null || personBase.getBirthDay().isEmpty()) {
+            val birthdays = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:personBase.personBase.birthDate");
             if (birthdays.size() > 0)
-                person.setBirthDay(birthdays.get(0));
+                personBase.setBirthDay(birthdays.get(0));
         }
 
-        if(person.getGender() == null || person.getGender().isEmpty()) {
-            val genders = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:person.person.gender");
+        if(personBase.getGender() == null || personBase.getGender().isEmpty()) {
+            val genders = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:personBase.personBase.gender");
             if (genders.size() > 0) {
                 if (genders.get(0).toLowerCase().equals("female"))
-                    person.setGender("女");
+                    personBase.setGender("女");
                 else if (genders.get(0).toLowerCase().equals("male"))
-                    person.setGender("男");
+                    personBase.setGender("男");
             }
         }
+        val person = new Person();
+        person.setName(personBase.getName());
+        person.setPhone(personBase.getPhone());
+        person.setSubjectId(personBase.getSubjectId());
+        person.setBirthDay(personBase.getBirthDay());
+        person.setGender(personBase.getGender());
+        person.setIdentity(personBase.getIdentity());
+        personRepository.save(person);
         return person;
+
     }
 }

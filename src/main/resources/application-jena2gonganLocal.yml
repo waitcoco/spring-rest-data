@@ -1,6 +1,6 @@
 jena:
-  modelName: biluFusionLocal
-  fusekiURI: http://localhost:3330/knowledge
+  modelName: biluProdFusion
+  fusekiURI: http://10.233.6.164:3330/knowledge
 
 
 eureka:
@@ -17,7 +17,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:6603/rizhaogongan
     username: root
-    password: admin
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:

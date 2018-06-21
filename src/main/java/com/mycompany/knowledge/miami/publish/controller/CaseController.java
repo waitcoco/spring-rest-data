@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cases")
-@Api(description = "Case APIs")
+@Api(description = "CaseBase APIs")
 public class CaseController {
     @Autowired
     CaseRepository caseRepository;

@@ -1,5 +1,6 @@
 package com.mycompany.knowledge.miami.publish.engine.gongan;
 
+import com.mycompany.knowledge.miami.publish.model.gongan.Person;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -8,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class Bilu {
+public class BiluBase {
     private String subjectId;
     private String biluId;
     private String name;
     private String content;
 
-    private List<Person> persons = new ArrayList<>();
+    private List<Person> person = new ArrayList<>();
     private Map<String, String> phones = new HashMap<>();
     private Map<String, String> bankCards = new HashMap<>();
 

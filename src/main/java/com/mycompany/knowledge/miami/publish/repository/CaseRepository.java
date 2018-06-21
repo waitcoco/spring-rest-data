@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CaseRepository extends CrudRepository<Case, String>{
-//    @Query("from Case aCase where aCase.caseName=:caseName")
-//    Case findByName(String caseName);
+//    @Query("from CaseBase aCase where aCase.caseName=:caseName")
+//    CaseBase findByName(String caseName);
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Person {
+public class PersonBase {
     private String subjectId;
     private String name;
     private String gender;
@@ -17,6 +17,6 @@ public class Person {
     // case subjectId
     private List<String> caseList = new ArrayList<>();
 
-    // case subjectId
+    // bilu subjectId
     private List<String> biluList = new ArrayList<>();
 }
