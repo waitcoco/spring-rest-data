@@ -6,26 +6,19 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import static com.mongodb.client.model.Filters.in;
-
 @Repository
-public class MongoBiluRepo {
-
+public class MongoCaseBasicRepo {
     private final MongoCollection<Document> collection;
 
-    public MongoBiluRepo(
+    public MongoCaseBasicRepo(
             MongoClient mongoClient,
-            @Value("${miami.publish.mongobilu.database}") String database,
-            @Value("${miami.publish.mongobilu.collection.bilu}") String collectionName
+            @Value("${miami.publish.mongocase.database}") String database,
+            @Value("${miami.publish.mongocase.collection.bilu}") String collectionName
     ) {
         collection = mongoClient.getDatabase(database).getCollection(collectionName);
     }
 
-    public Iterable<String> getBiluList(Iterable<String> ids) {
-        return collection.find(in("_id", ids)).map(Document::toJson);
-    }
-
-    public Iterable<String> getBiluList() {
+    public Iterable<String> getCaseList() {
         return collection.find().map(Document::toJson);
     }
 }

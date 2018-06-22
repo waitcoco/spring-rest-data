@@ -1,6 +1,6 @@
 jena:
-  modelName: biluProdFusion
-  fusekiURI: http://10.233.6.164:3330/knowledge
+  modelName: biluDevDelta
+  fusekiURI: http://localhost:3330/knowledge
 
 
 eureka:
@@ -15,7 +15,7 @@ spring:
     mongodb:
       uri: mongodb://admin:password@localhost:27017/admin
   datasource:
-    url: jdbc:mysql://localhost:6603/rizhaogongan
+    url: jdbc:mysql://10.233.7.13:6603/rizhaogongan
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
@@ -30,9 +30,13 @@ spring:
 
 miami:
   publish:
-    mongodb:
+    mongobilu:
       database: zhinengtiaojie
       collection:
         bilu: tiaojieDocInfoLocal
+    mongocase:
+      database: zhinengtiaojie
+      collection:
+        case: aj_basic
     elasticsearch:
       host: http://localhost:9200

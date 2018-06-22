@@ -37,12 +37,9 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private RelationRepository relationRepository;
 
     public FusekiJenaLibrary fusekiJenaLibrary;
-    private String fusekiURI;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
     private String inputModelName;
     public JenaGonganPublishEngine(String fusekiURI, String modelName) {
-        this.fusekiURI = fusekiURI;
-//        this.accessor = DatasetAccessorFactory.createHTTP(fusekiURI);
         this.inputModelName = modelName;
         this.fusekiJenaLibrary = new FusekiJenaLibrary(fusekiURI);
     }
