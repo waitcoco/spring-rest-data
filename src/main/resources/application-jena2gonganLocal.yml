@@ -1,6 +1,6 @@
 jena:
-  modelName: biluProdFusion
-  fusekiURI: http://10.233.6.164:3330/knowledge
+  modelName: biluDevDelta
+  fusekiURI: http://localhost:3330/knowledge
 
 
 eureka:

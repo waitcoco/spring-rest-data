@@ -18,6 +18,7 @@ public class Bilu {
     @NonNull
     private String subjectId;
     private String name;
+    @Column(length=5000)
     private String content;
     private String biluId;
     private String phones;
@@ -25,11 +26,11 @@ public class Bilu {
 //    @ManyToMany(mappedBy = "bilus", cascade = CascadeType.ALL)
 //    private List<Person> persons;
     @ManyToOne
-    @JoinColumn(name = "case_repo_id")
+    @JoinColumn(name = "case_repo_subject_id")
     private Case aCase;
 //    @Override
 //    public String toString() {
 //        String personNames = String.join(",", persons.stream().map(person->person.getName()).collect(Collectors.toList()));
-//        return String.format("id: %s, name: %s, person names: %s\n", subjectId, name, personNames);
+//        return String.format("subjectId: %s, name: %s, person names: %s\n", subjectId, name, personNames);
 //    }
 }

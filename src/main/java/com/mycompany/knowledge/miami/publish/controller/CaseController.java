@@ -1,5 +1,6 @@
 package com.mycompany.knowledge.miami.publish.controller;
 
+import com.mycompany.knowledge.miami.publish.exception.ResourceNotFoundException;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
 import io.swagger.annotations.Api;
@@ -27,6 +28,14 @@ public class CaseController {
         return "Saved";
     }
 
+    @RequestMapping("/one")
+    public Case getPerson(@RequestParam("caseId") String caseId){
+        if(caseRepository.findOne(caseId)==null){
+            throw new ResourceNotFoundException("person is not found");
+        }
+        else return caseRepository.findOne(caseId);
+    }
+
     @GetMapping("/all")
     @Transactional
     public List<String> getAllCases() {
@@ -41,4 +50,5 @@ public class CaseController {
     public long getSize() {
      return caseRepository.count();
     }
+
 }
