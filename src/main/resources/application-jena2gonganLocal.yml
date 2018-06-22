@@ -13,7 +13,7 @@ eureka:
 spring:
   data:
     mongodb:
-      uri: mongodb://admin:password@localhost:27017/admin
+      uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   datasource:
     url: jdbc:mysql://10.233.7.13:6603/rizhaogongan
     username: root

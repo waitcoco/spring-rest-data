@@ -21,4 +21,10 @@ public class MongoCaseBasicRepo {
     public Iterable<String> getCaseList() {
         return collection.find().map(Document::toJson);
     }
+
+    public String getCaseByAJBH(String caseId){
+        // todo
+        // @jinzhao
+        return "";
+    }
 }
