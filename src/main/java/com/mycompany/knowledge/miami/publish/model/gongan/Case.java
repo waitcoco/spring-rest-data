@@ -21,7 +21,7 @@ public class Case {
     @Id
     @NonNull
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private String subjectId;
     private String caseId;
     private String type;
     private String name;
@@ -29,9 +29,9 @@ public class Case {
     private List<Bilu> bilus;
 //    @ManyToMany(mappedBy = "cases", cascade = CascadeType.ALL)
 //    private List<Person> psersons;
-    @Override
-    public String toString() {
-        String biluNames = String.join(",", bilus.stream().map(bilu->bilu.getName()).collect(Collectors.toList()));
-        return String.format("id: %s, name: %s, bilu names: %s\n", id, name, biluNames);
-    }
+//    @Override
+//    public String toString() {
+//        String biluNames = String.join(",", bilus.stream().map(bilu->bilu.getName()).collect(Collectors.toList()));
+//        return String.format("subjectId: %s, name: %s, bilu names: %s\n", subjectId, name, biluNames);
+//    }
 }

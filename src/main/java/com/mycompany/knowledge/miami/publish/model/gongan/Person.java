@@ -31,6 +31,6 @@ public class Person {
 //    @Override
 //    public String toString() {
 //        String biluNames = String.join(",", bilus.stream().map(bilu->bilu.getName()).collect(Collectors.toList()));
-//        return String.format("id: %s, name: %s, bilu names: %s\n", subjectId, name, biluNames);
+//        return String.format("subjectId: %s, name: %s, bilu names: %s\n", subjectId, name, biluNames);
 //    }
 }

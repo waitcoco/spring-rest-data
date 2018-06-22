@@ -39,7 +39,7 @@ public class RepositoryTest {
     public void testSaveCase() {
         Case aCase = new Case("sdddd");
         aCase.setName("测试案件");
-        //aCase.setId(123l);
+        //aCase.setSubjectId(123l);
         Bilu bilu = new Bilu("笔录的id");
         bilu.setName("测试笔录");
         bilu.setACase(aCase);

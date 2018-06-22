@@ -72,7 +72,7 @@ public class BaseJenaLibrary implements JenaLibrary{
 
     @Override
     public Iterator<Statement> getStatementsById(Model model, String id) {
-        Property property = model.getProperty("common:type.object.id");
+        Property property = model.getProperty("common:type.object.subjectId");
         SimpleSelector simpleSelector = new SimpleSelector(null, property, id);
         return model.listStatements(simpleSelector);
     }

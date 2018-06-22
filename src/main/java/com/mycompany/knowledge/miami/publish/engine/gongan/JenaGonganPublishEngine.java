@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JenaGonganPublishEngine implements PublishEngine{
@@ -64,23 +63,18 @@ public class JenaGonganPublishEngine implements PublishEngine{
             Resource resource = iterator.next().getSubject();
 
             CaseBase aCaseBase = new CaseBase();
-            Case aCase = new Case();
             aCaseBase.setSubjectId(resource.toString());
-            aCase.setId(resource.toString());
-            List<String> csIds = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.id");
+            List<String> csIds = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.subjectId");
             if (csIds.size() > 0)
                 aCaseBase.setCaseId(csIds.get(0));
-                aCase.setCaseId(csIds.get(0));
 
             List<String> csNames = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.name");
             if (csNames.size() > 0)
                 aCaseBase.setCaseName(csNames.get(0));
-                aCase.setName(csNames.get(0));
 
             List<String> csTypes = fusekiJenaLibrary.getStringValueBySP(model, resource, "gongan:gongan.case.category");
             if (csTypes.size() > 0)
                 aCaseBase.setCaseType(String.join(",", csTypes));
-                aCase.setType(String.join(",",csTypes));
 
             val biluIter1 = fusekiJenaLibrary.getStatementsBySP(model, resource, "gongan:gongan.case.bilu");
             while (biluIter1.hasNext()) {
@@ -95,7 +89,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
                 BiluBase biluBase = getBiluInfo(model, biluResource);
                 aCaseBase.getBilus().add(biluBase);
-
+                System.out.println(aCaseBase.getBilus().size());
                 for (String pSubjectId : biluBase.getConnections().keySet()) {
                     if (!aCaseBase.getConnections().containsKey(pSubjectId))
                         aCaseBase.getConnections().put(pSubjectId, biluBase.getConnections().get(pSubjectId));
@@ -105,8 +99,13 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     }
                 }
             }
-            val biluList = new ArrayList<Bilu>();
-            for(val biluBase:aCaseBase.getBilus()){
+            val aCase = new Case();
+            aCase.setSubjectId(aCaseBase.getSubjectId());
+            aCase.setName(aCaseBase.getCaseName());
+            aCase.setCaseId(aCaseBase.getCaseId());
+            aCase.setType(aCaseBase.getCaseType());
+            List<Bilu> biluList = new ArrayList<>();
+            for(val biluBase : aCaseBase.getBilus()){
                 val bilu  = new Bilu();
                 Gson gson = new Gson();
                 bilu.setContent(biluBase.getContent());
@@ -117,15 +116,14 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 bilu.setBankcards(gson.toJson(biluBase.getBankCards()));
                 bilu.setPhones(gson.toJson(biluBase.getPhones()));
                 biluList.add(bilu);
-                biluRepository.save(bilu);
+                int i = 1;
                 for(val perosn : biluBase.getPerson()){
-                    int i = 0;
                     val relation = new Relation();
                     relation.setSubjectId(i);
                     i++;
                     relation.setPersonSubjectId(perosn.getSubjectId());
                     relation.setBiluSubjectId(biluBase.getSubjectId());
-                    relation.setCaseSubjectId(aCase.getId());
+                    relation.setCaseSubjectId(aCase.getSubjectId());
                     relationRepository.save(relation);
                 }
             }
@@ -139,8 +137,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
         biluBase.setSubjectId(resource.toString());
 
-        //bilu id
-        List<String> bilu_id_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.id");
+        //bilu subjectId
+        List<String> bilu_id_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.subjectId");
         biluBase.setBiluId(bilu_id_list.size() > 0 ? bilu_id_list.get(0) : "");
 
         //bilu name
@@ -286,6 +284,5 @@ public class JenaGonganPublishEngine implements PublishEngine{
         person.setIdentity(personBase.getIdentity());
         personRepository.save(person);
         return person;
-
     }
 }
