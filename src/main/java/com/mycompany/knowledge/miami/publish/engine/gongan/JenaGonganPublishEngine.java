@@ -31,8 +31,6 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PersonRepository personRepository;
     @Autowired
     private RelationRepository relationRepository;
-    @Autowired
-    private MongoCaseBasicRepo mongoCaseBasicRepo;
 
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
@@ -142,19 +140,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
             logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
             aCase.setBilus(biluList);
-            enrichCaseFromMongo(aCase);
             caseRepository.save(aCase);
         }
-    }
-
-
-    private void enrichCaseFromMongo(Case acase){
-        // todo
-        // 从mongo 里面拿case basic info, 然后塞到Case里面
-
-        String mongoString = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
-
-
     }
 
     private BiluBase getBiluInfo(Model model, Resource resource) {

@@ -34,9 +34,5 @@ miami:
       database: zhinengtiaojie
       collection:
         bilu: tiaojieDocInfoLocal
-    mongocase:
-      database: zhinengtiaojie
-      collection:
-        case: aj_basic
     elasticsearch:
       host: http://localhost:9200
