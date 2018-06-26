@@ -2,10 +2,7 @@ package com.mycompany.knowledge.miami.publish.model.gongan;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -17,9 +14,14 @@ import javax.persistence.Table;
 @EqualsAndHashCode
 public class Relation {
     @Id
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String subjectId;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String personSubjectId;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String biluSubjectId;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String caseSubjectId;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String role;
 }

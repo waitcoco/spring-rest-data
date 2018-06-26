@@ -2,10 +2,7 @@ package com.mycompany.knowledge.miami.publish.model.gongan;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -19,11 +16,17 @@ import javax.persistence.Table;
 public class Person {
     @Id
     @NonNull
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String subjectId;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String name;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String phone;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String gender;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String birthDay;
+    @Column(columnDefinition = "NVARCHAR2(255)")
     private String identity;
 //    @ManyToMany
 //    @JoinColumn(name = "bilu_subject_id")
