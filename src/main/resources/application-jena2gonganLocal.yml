@@ -30,7 +30,7 @@ spring:
 
 miami:
   publish:
-    mongobilu:
+    mongodb:
       database: zhinengtiaojie
       collection:
         bilu: tiaojieDocInfoLocal

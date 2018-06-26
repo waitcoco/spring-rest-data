@@ -15,8 +15,8 @@ public class MongoBiluRepo {
 
     public MongoBiluRepo(
             MongoClient mongoClient,
-            @Value("${miami.publish.mongobilu.database}") String database,
-            @Value("${miami.publish.mongobilu.collection.bilu}") String collectionName
+            @Value("${miami.publish.mongodb.database}") String database,
+            @Value("${miami.publish.mongodb.collection.bilu}") String collectionName
     ) {
         collection = mongoClient.getDatabase(database).getCollection(collectionName);
     }
