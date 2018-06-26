@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class BiluController {
     @Autowired
     BiluRepository biluRepository;
 
+    @Transactional
     @RequestMapping("/one")
     public Bilu getBilu(@RequestParam("biluId") String biluId){
         if(biluRepository.findOne(biluId)==null){
@@ -27,6 +29,7 @@ public class BiluController {
         else return biluRepository.findOne(biluId);
     }
 
+    @Transactional
     @RequestMapping("/all")
     public List<String> getBilus(){
         List<String> bilus = new ArrayList<>();

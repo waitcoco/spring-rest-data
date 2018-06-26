@@ -26,6 +26,7 @@ public class CaseController {
         return "Saved";
     }
 
+    @Transactional
     @RequestMapping("/one")
     public Case getPerson(@RequestParam("caseId") String caseId){
         if(caseRepository.findOne(caseId)==null){
@@ -43,7 +44,7 @@ public class CaseController {
         return cases;
     }
 
-
+    @Transactional
     @GetMapping("/size")
     public long getSize() {
      return caseRepository.count();
