@@ -25,6 +25,13 @@ public class Case {
     private String caseId;
     private String type;
     private String name;
+
+    private String zbr_xm;
+    private String cbdw_bh;
+
+    // todo
+    // @jinzhao
+
     @OneToMany(mappedBy = "aCase", cascade = CascadeType.ALL)
     private List<Bilu> bilus;
 //    @ManyToMany(mappedBy = "cases", cascade = CascadeType.ALL)

@@ -8,10 +8,7 @@ import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.model.gongan.Person;
 import com.mycompany.knowledge.miami.publish.model.gongan.Relation;
-import com.mycompany.knowledge.miami.publish.repository.BiluRepository;
-import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
-import com.mycompany.knowledge.miami.publish.repository.PersonRepository;
-import com.mycompany.knowledge.miami.publish.repository.RelationRepository;
+import com.mycompany.knowledge.miami.publish.repository.*;
 import lombok.val;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -34,14 +31,13 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PersonRepository personRepository;
     @Autowired
     private RelationRepository relationRepository;
+    @Autowired
+    private MongoCaseBasicRepo mongoCaseBasicRepo;
 
     public FusekiJenaLibrary fusekiJenaLibrary;
-    private String fusekiURI;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
     private String inputModelName;
     public JenaGonganPublishEngine(String fusekiURI, String modelName) {
-        this.fusekiURI = fusekiURI;
-//        this.accessor = DatasetAccessorFactory.createHTTP(fusekiURI);
         this.inputModelName = modelName;
         this.fusekiJenaLibrary = new FusekiJenaLibrary(fusekiURI);
     }
@@ -131,8 +127,20 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
             aCase.setBilus(biluList);
+            enrichCaseFromMongo(aCase);
+
             caseRepository.save(aCase);
         }
+    }
+
+
+    private void enrichCaseFromMongo(Case acase){
+        // todo
+        // 从mongo 里面拿case basic info, 然后塞到Case里面
+
+        String mongoString = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
+
+
     }
 
     private BiluBase getBiluInfo(Model model, Resource resource) {

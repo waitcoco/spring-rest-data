@@ -13,9 +13,9 @@ eureka:
 spring:
   data:
     mongodb:
-      uri: mongodb://admin:password@localhost:27017/admin
+      uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   datasource:
-    url: jdbc:mysql://localhost:6603/rizhaogongan
+    url: jdbc:mysql://10.233.7.13:6603/rizhaogongan
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
@@ -30,9 +30,13 @@ spring:
 
 miami:
   publish:
-    mongodb:
+    mongobilu:
       database: zhinengtiaojie
       collection:
         bilu: tiaojieDocInfoLocal
+    mongocase:
+      database: zhinengtiaojie
+      collection:
+        case: aj_basic
     elasticsearch:
       host: http://localhost:9200
