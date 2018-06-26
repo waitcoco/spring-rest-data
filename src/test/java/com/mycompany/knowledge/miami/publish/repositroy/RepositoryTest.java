@@ -23,7 +23,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = MiamiPublishApplication.class)
-@ActiveProfiles("jena2gonganProd")
+@ActiveProfiles("jena2gonganLocal")
 public class RepositoryTest {
     @Autowired
     CaseRepository caseRepository;
@@ -39,7 +39,7 @@ public class RepositoryTest {
     public void testSaveCase() {
         Case aCase = new Case("sdddd");
         aCase.setName("测试案件");
-        //aCase.setId(123l);
+        //aCase.setSubjectId(123l);
         Bilu bilu = new Bilu("笔录的id");
         bilu.setName("测试笔录");
         bilu.setACase(aCase);
@@ -47,8 +47,8 @@ public class RepositoryTest {
         person.setName("王大锤");
         List<Bilu> bilus = new ArrayList<Bilu>();
         bilus.add(bilu);
-        person.setBilus(bilus);
-        bilu.setPersons(Arrays.asList(new Person[]{person}));
+//        person.setBilus(bilus);
+//        bilu.setPersons(Arrays.asList(new Person[]{person}));
         aCase.setBilus(bilus);
         caseRepository.save(aCase);
     }

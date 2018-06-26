@@ -1,6 +1,6 @@
 package com.mycompany.knowledge.miami.publish.engine;
 
-import com.mycompany.knwoledge.miami.publish.engine.gongan.JenaGonganPublishEngine;
+import com.mycompany.knowledge.miami.publish.engine.gongan.JenaGonganPublishEngine;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

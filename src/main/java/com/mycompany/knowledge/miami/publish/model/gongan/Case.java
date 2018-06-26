@@ -4,28 +4,38 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Entity
 @Getter
 @Setter
-@Table(name = "case_repo")
+@Table(name = "case_repo",indexes = {@Index(columnList = "subjectId")})
 @RequiredArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Case {
-    @NonNull
+
     @Id
+    @NonNull
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private String subjectId;
+    private String caseId;
+    private String type;
     private String name;
+
+    private String zbr_xm;
+    private String cbdw_bh;
+
+    // todo
+    // @jinzhao
+
     @OneToMany(mappedBy = "aCase", cascade = CascadeType.ALL)
     private List<Bilu> bilus;
-    @Override
-    public String toString() {
-        String biluNames = String.join(",", bilus.stream().map(bilu->bilu.getName()).collect(Collectors.toList()));
-        return String.format("id: %s, name: %s, bilu names: %s\n", id, name, biluNames);
-    }
+//    @ManyToMany(mappedBy = "cases", cascade = CascadeType.ALL)
+//    private List<Person> psersons;
+//    @Override
+//    public String toString() {
+//        String biluNames = String.join(",", bilus.stream().map(bilu->bilu.getName()).collect(Collectors.toList()));
+//        return String.format("subjectId: %s, name: %s, bilu names: %s\n", subjectId, name, biluNames);
+//    }
 }

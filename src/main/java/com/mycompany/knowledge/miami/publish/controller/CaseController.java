@@ -1,11 +1,10 @@
 package com.mycompany.knowledge.miami.publish.controller;
 
+import com.mycompany.knowledge.miami.publish.exception.ResourceNotFoundException;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
 import io.swagger.annotations.Api;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -14,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cases")
-@Api(description = "Case APIs")
+@Api(description = "CaseBase APIs")
 public class CaseController {
     @Autowired
     CaseRepository caseRepository;
@@ -27,6 +26,15 @@ public class CaseController {
         return "Saved";
     }
 
+    @Transactional
+    @RequestMapping("/one")
+    public Case getPerson(@RequestParam("caseId") String caseId){
+        if(caseRepository.findOne(caseId)==null){
+            throw new ResourceNotFoundException("person is not found");
+        }
+        else return caseRepository.findOne(caseId);
+    }
+
     @GetMapping("/all")
     @Transactional
     public List<String> getAllCases() {
@@ -36,9 +44,10 @@ public class CaseController {
         return cases;
     }
 
-
+    @Transactional
     @GetMapping("/size")
     public long getSize() {
      return caseRepository.count();
     }
+
 }

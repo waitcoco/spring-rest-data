@@ -1,5 +1,5 @@
 jena:
-  modelName: biluFusionLocal
+  modelName: biluDevFusion
   fusekiURI: http://localhost:3330/knowledge
 
 
@@ -13,15 +13,15 @@ eureka:
 spring:
   data:
     mongodb:
-      uri: mongodb://admin:password@localhost:27017/admin
+      uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   datasource:
-    url: jdbc:mysql://localhost:6603/rizhaogongan
+    url: jdbc:mysql://localhost:3306/rizhaogongan
     username: root
-    password: admin
+    password: windows@12
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
