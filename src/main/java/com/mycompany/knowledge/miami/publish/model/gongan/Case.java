@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "case_repo")
+@Table(name = "case_repo",indexes = {@Index(columnList = "subjectId")})
 @RequiredArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode

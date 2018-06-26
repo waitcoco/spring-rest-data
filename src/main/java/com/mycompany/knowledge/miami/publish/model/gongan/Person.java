@@ -4,12 +4,15 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "person")
+@Table(name = "person",indexes = {@Index(columnList = "name"),
+        @Index(columnList = "phone"),
+        @Index(columnList = "identity")})
 @RequiredArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode

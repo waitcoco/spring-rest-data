@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "bilu")
+@Table(name = "bilu",indexes = {@Index(columnList = "subjectId")})
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode
