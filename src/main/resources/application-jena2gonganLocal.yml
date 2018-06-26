@@ -1,5 +1,5 @@
 jena:
-  modelName: biluDevDelta
+  modelName: biluDev
   fusekiURI: http://localhost:3330/knowledge
 
 
@@ -21,7 +21,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
