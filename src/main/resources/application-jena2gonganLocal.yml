@@ -1,5 +1,5 @@
 jena:
-  modelName: biluDevDelta
+  modelName: biluDevFusion
   fusekiURI: http://localhost:3330/knowledge
 
 
@@ -15,9 +15,9 @@ spring:
     mongodb:
       uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   datasource:
-    url: jdbc:mysql://10.233.7.13:6603/rizhaogongan
+    url: jdbc:mysql://localhost:3306/rizhaogongan
     username: root
-    password: 123456
+    password: windows@12
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
