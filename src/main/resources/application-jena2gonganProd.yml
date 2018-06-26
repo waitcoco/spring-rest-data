@@ -1,5 +1,5 @@
 jena:
-  modelName: biluProdFusion
+  modelName: biluFusion
   fusekiURI: http://172.19.9.110/knowledge
 
 spring:
