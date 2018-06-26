@@ -51,6 +51,10 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
 
     public void publishCases(){
+        caseRepository.deleteAll();
+        personRepository.deleteAll();
+        biluRepository.deleteAll();
+        relationRepository.deleteAll();
         val model = fusekiJenaLibrary.getModel(inputModelName);
         if (model == null) {
             throw new RuntimeException("Can not get model " + inputModelName);
