@@ -29,7 +29,7 @@ public class CaseController {
     }
 
     @RequestMapping("/one")
-    public Case getPerson(@RequestParam("caseId") String caseId){
+    public Case getPerson(@RequestParam("_id") String caseId){
         if(caseRepository.findOne(caseId)==null){
             throw new ResourceNotFoundException("person is not found");
         }
