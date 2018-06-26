@@ -15,7 +15,7 @@ public class BiluBase {
     private String name;
     private String content;
 
-    private List<Person> person = new ArrayList<>();
+    private List<PersonBase> person = new ArrayList<>();
     private Map<String, String> phones = new HashMap<>();
     private Map<String, String> bankCards = new HashMap<>();
 

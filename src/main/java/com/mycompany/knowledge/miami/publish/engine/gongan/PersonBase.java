@@ -13,10 +13,4 @@ public class PersonBase {
     private String phone;
     private String birthDay;
     private String identity;
-
-    // case subjectId
-    private List<String> caseList = new ArrayList<>();
-
-    // bilu subjectId
-    private List<String> biluList = new ArrayList<>();
 }
