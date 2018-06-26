@@ -44,7 +44,7 @@ public class PublishController {
         uploadBiluToEs(null);
     }
 
-    @GetMapping("/ES/clear")
+    @PostMapping("/ES/clear")
     public void clearES() throws IOException {
         esPublishEngine.deleteIndex();
     }
