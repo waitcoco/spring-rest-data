@@ -140,8 +140,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private void enrichCaseFromMongo(Case acase){
         // todo
         // 从mongo 里面拿case basic info, 然后塞到Case里面
-
-        Case mongoCase = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
+        Case mongoCase = new Case();
+        mongoCase = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
         acase.setCaseId(mongoCase.getCaseId());
         acase.setAjbh(mongoCase.getAjbh());
         acase.setAjlx(mongoCase.getAjlx());
