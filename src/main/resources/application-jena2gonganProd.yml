@@ -1,6 +1,6 @@
 jena:
-  modelName: biluFusion.v2
-  fusekiURI: http://172.19.10.40/knowledge
+  modelName: biluFusion
+  fusekiURI: http://172.19.9.110/knowledge
 
 spring:
   datasource:
@@ -10,7 +10,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect

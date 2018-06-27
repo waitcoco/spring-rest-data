@@ -1,18 +1,15 @@
 package com.mycompany.knowledge.miami.publish.model.gongan;
 
 import lombok.*;
-import org.elasticsearch.common.recycler.Recycler;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Entity
 @Getter
 @Setter
-@Table(name = "case_repo")
+@Table(name = "case_repo",indexes = {@Index(columnList = "subjectId")})
 @RequiredArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode

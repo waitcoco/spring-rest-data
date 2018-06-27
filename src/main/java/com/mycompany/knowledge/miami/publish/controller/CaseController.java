@@ -4,9 +4,7 @@ import com.mycompany.knowledge.miami.publish.exception.ResourceNotFoundException
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
 import io.swagger.annotations.Api;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -28,6 +26,7 @@ public class CaseController {
         return "Saved";
     }
 
+    @Transactional
     @RequestMapping("/one")
     public Case getPerson(@RequestParam("_id") String caseId){
         if(caseRepository.findOne(caseId)==null){
@@ -45,7 +44,7 @@ public class CaseController {
         return cases;
     }
 
-
+    @Transactional
     @GetMapping("/size")
     public long getSize() {
      return caseRepository.count();

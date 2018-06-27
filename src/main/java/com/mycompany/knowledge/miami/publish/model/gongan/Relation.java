@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode
 public class Relation {
     @Id
-    private Integer subjectId;
+    private String subjectId;
     private String personSubjectId;
     private String biluSubjectId;
     private String caseSubjectId;

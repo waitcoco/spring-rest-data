@@ -15,7 +15,4 @@ public class CaseBase {
     private String caseName;
     private String caseType;
     private List<BiluBase> bilus = new ArrayList<>();
-
-    //key is subjectid, value is connection type;
-    private Map<String, String> connections = new HashMap<>();
 }

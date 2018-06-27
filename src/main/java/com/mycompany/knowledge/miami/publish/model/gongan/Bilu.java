@@ -3,13 +3,11 @@ package com.mycompany.knowledge.miami.publish.model.gongan;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "bilu")
+@Table(name = "bilu",indexes = {@Index(columnList = "subjectId")})
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode
