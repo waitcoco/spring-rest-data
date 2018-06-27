@@ -23,8 +23,8 @@ public class Case {
     private String type;
     private String name;
 
-    private String zbr_xm;
-    private String cbdw_bh;
+//    private String zbr_xm;
+//    private String cbdw_bh;
 
     // todo
     // @jinzhao
