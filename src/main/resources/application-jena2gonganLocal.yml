@@ -15,9 +15,9 @@ spring:
     mongodb:
       uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   datasource:
-    url: jdbc:mysql://localhost:3306/rizhaogongan
+    url: jdbc:mysql://localhost:6603/rizhaogongan
     username: root
-    password: windows@12
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
@@ -36,3 +36,4 @@ miami:
         bilu: tiaojieDocInfoLocal
     elasticsearch:
       host: http://localhost:9200
+

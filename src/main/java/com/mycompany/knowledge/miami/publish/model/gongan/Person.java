@@ -16,17 +16,17 @@ import javax.persistence.*;
 public class Person {
     @Id
     @NonNull
-    @Column(columnDefinition = "NVARCHAR2(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String subjectId;
-    @Column(columnDefinition = "NVARCHAR2(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
-    @Column(columnDefinition = "NVARCHAR2(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String phone;
-    @Column(columnDefinition = "NVARCHAR2(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String gender;
-    @Column(columnDefinition = "NVARCHAR2(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String birthDay;
-    @Column(columnDefinition = "NVARCHAR2(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String identity;
 //    @ManyToMany
 //    @JoinColumn(name = "bilu_subject_id")
