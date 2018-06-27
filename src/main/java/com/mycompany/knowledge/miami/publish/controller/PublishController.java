@@ -46,8 +46,9 @@ public class PublishController {
 
     @PostMapping("/ES/clear")
     public void clearES() throws IOException {
-        if (esPublishEngine.indexExists())
+        if (esPublishEngine.indexExists()) {
             esPublishEngine.deleteIndex();
+        }
     }
 
     private void uploadBiluToEs(List<String> mongoIds) throws IOException {
