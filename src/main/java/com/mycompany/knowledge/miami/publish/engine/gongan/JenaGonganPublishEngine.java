@@ -50,6 +50,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
     }
 
 
+
     public void publishCases() {
         caseRepository.deleteAll();
         personRepository.deleteAll();

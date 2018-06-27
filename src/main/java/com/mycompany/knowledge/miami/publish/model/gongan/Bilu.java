@@ -16,10 +16,10 @@ public class Bilu {
     @NonNull
     private String subjectId;
     private String name;
-    @Column(length=10000)
+    @Column(length = 10000)
     private String content;
     private String biluId;
-    @Column(length=5000)
+    @Column(length = 5000)
     private String phones;
     private String bankcards;
 //    @ManyToMany(mappedBy = "bilus", cascade = CascadeType.ALL)

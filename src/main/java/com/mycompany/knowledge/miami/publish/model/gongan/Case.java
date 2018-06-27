@@ -22,7 +22,6 @@ public class Case {
     private String caseId;
     private String type;
     private String name;
-
     private String zbrXm;
     private String cbdwBh;
     private String ajbh;
