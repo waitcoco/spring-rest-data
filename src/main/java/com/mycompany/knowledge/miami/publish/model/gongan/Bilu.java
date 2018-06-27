@@ -14,17 +14,13 @@ import javax.persistence.*;
 public class Bilu {
     @Id
     @NonNull
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String subjectId;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
-    @Column(columnDefinition = "NVARCHAR(10000)")
+    @Column(length = 10000)
     private String content;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String biluId;
-    @Column(columnDefinition = "NVARCHAR(5000)")
+    @Column(length = 5000)
     private String phones;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String bankcards;
 //    @ManyToMany(mappedBy = "bilus", cascade = CascadeType.ALL)
 //    private List<Person> persons;

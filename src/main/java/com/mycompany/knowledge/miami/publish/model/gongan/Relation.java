@@ -14,14 +14,9 @@ import javax.persistence.*;
 @EqualsAndHashCode
 public class Relation {
     @Id
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String subjectId;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String personSubjectId;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String biluSubjectId;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String caseSubjectId;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String role;
 }

@@ -18,13 +18,9 @@ public class Case {
     @Id
     @NonNull
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String subjectId;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String caseId;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String type;
-    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
 
 //    private String zbr_xm;
