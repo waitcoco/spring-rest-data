@@ -8,7 +8,10 @@ import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.model.gongan.Person;
 import com.mycompany.knowledge.miami.publish.model.gongan.Relation;
-import com.mycompany.knowledge.miami.publish.repository.*;
+import com.mycompany.knowledge.miami.publish.repository.BiluRepository;
+import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
+import com.mycompany.knowledge.miami.publish.repository.PersonRepository;
+import com.mycompany.knowledge.miami.publish.repository.RelationRepository;
 import lombok.val;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -16,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -133,14 +135,19 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
 
-            relationRepository.save(relationList);
-            logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
+            try {
+                relationRepository.save(relationList);
+                logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
-            personRepository.save(personList);
-            logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
+                personRepository.save(personList);
+                logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
-            aCase.setBilus(biluList);
-            caseRepository.save(aCase);
+                aCase.setBilus(biluList);
+                caseRepository.save(aCase);
+            }catch(Exception e)
+            {
+                logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
+            }
         }
     }
 
