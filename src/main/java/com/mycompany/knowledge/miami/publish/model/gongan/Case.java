@@ -22,25 +22,25 @@ public class Case {
     private String caseId;
     private String type;
     private String name;
-    private String zbrXm;
-    private String cbdwBh;
-    private String ajbh;
-    private String ajlx;
-    private String ajlxName;
-    private String ajmc;
-    private String ajzt;
-    private String ajztName;
-    private String cbdwMc;
-    private String fadd;
-    private String id;
-    private String jqbh;
-    private String jyaq;
-    private String lasj;
-    private String lrsj;
-    private String sldwMc;
-    private String slsj;
-    private String xyrXm;
-    private String zbrSfzh;
+    private String ZBR_XM;
+    private String CBDW_BH;
+    private String AJBH;
+    private String AJLX;
+    private String AJLXName;
+    private String AJMC;
+    private String AJZT;
+    private String AJZTName;
+    private String CBDW_MC;
+    private String FADD;
+    private String ID;
+    private String JQBH;
+    private String JYAQ;
+    private String LASJ;
+    private String LRSJ;
+    private String SLDW_MC;
+    private String SLSJ;
+    private String XYR_XM;
+    private String ZBR_SFZH;
 
     // todo
     // @jinzhao

@@ -8,10 +8,7 @@ import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.model.gongan.Person;
 import com.mycompany.knowledge.miami.publish.model.gongan.Relation;
-import com.mycompany.knowledge.miami.publish.repository.BiluRepository;
-import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
-import com.mycompany.knowledge.miami.publish.repository.PersonRepository;
-import com.mycompany.knowledge.miami.publish.repository.RelationRepository;
+import com.mycompany.knowledge.miami.publish.repository.*;
 import lombok.val;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -33,6 +30,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PersonRepository personRepository;
     @Autowired
     private RelationRepository relationRepository;
+    @Autowired
+    private MongoCaseBasicRepo mongoCaseBasicRepo;
 
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
@@ -145,6 +144,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 personRepository.save(personList);
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
                 aCase.setBilus(biluList);
+                enrichCaseFromMongo(aCase);
                 caseRepository.save(aCase);
             } catch (Exception e) {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
@@ -152,31 +152,30 @@ public class JenaGonganPublishEngine implements PublishEngine{
         }
     }
 
-//    private void enrichCaseFromMongo(Case acase) {
-//        // todo
-//        // 从mongo 里面拿case basic info, 然后塞到Case里面
-//        Case mongoCase = new Case();
-//        mongoCase = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
-//        acase.setCaseId(mongoCase.getCaseId());
-//        acase.setAjbh(mongoCase.getAjbh());
-//        acase.setAjlx(mongoCase.getAjlx());
-//        acase.setAjlxName(mongoCase.getAjlxName());
-//        acase.setAjmc(mongoCase.getAjmc());
-//        acase.setAjzt(mongoCase.getAjzt());
-//        acase.setAjztName(mongoCase.getAjztName());
-//        acase.setCbdwBh(mongoCase.getCbdwBh());
-//        acase.setCbdwMc(mongoCase.getCbdwMc());
-//        acase.setFadd(mongoCase.getFadd());
-//        acase.setJqbh(mongoCase.getJqbh());
-//        acase.setJyaq(mongoCase.getJyaq());
-//        acase.setLasj(mongoCase.getLasj());
-//        acase.setLrsj(mongoCase.getLrsj());
-//        acase.setSldwMc(mongoCase.getSldwMc());
-//        acase.setSlsj(mongoCase.getSlsj());
-//        acase.setXyrXm(mongoCase.getXyrXm());
-//        acase.setZbrSfzh(mongoCase.getZbrSfzh());
-//        acase.setZbrXm(mongoCase.getZbrXm());
-//    }
+    private void enrichCaseFromMongo(Case acase) {
+        // todo
+        // 从mongo 里面拿case basic info, 然后塞到Case里面
+        Case mongoCase = new Case();
+        mongoCase = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
+        acase.setAJBH(mongoCase.getAJBH());
+        acase.setAJLX(mongoCase.getAJLX());
+        acase.setAJLXName(mongoCase.getAJLXName());
+        acase.setAJMC(mongoCase.getAJMC());
+        acase.setAJZT(mongoCase.getAJZT());
+        acase.setAJZTName(mongoCase.getAJZTName());
+        acase.setCBDW_BH(mongoCase.getCBDW_BH());
+        acase.setCBDW_MC(mongoCase.getCBDW_MC());
+        acase.setFADD(mongoCase.getFADD());
+        acase.setJQBH(mongoCase.getJQBH());
+        acase.setJYAQ(mongoCase.getJYAQ());
+        acase.setLASJ(mongoCase.getLASJ());
+        acase.setLRSJ(mongoCase.getLRSJ());
+        acase.setSLDW_MC(mongoCase.getSLDW_MC());
+        acase.setSLSJ(mongoCase.getSLSJ());
+        acase.setXYR_XM(mongoCase.getXYR_XM());
+        acase.setZBR_SFZH(mongoCase.getZBR_SFZH());
+        acase.setZBR_XM(mongoCase.getZBR_XM());
+    }
 
 
     private BiluBase getBiluInfo(Model model, Resource resource) {

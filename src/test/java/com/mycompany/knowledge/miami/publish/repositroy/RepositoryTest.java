@@ -6,6 +6,7 @@ import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.model.gongan.Person;
 import com.mycompany.knowledge.miami.publish.repository.BiluRepository;
 import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
+import com.mycompany.knowledge.miami.publish.repository.MongoCaseBasicRepo;
 import com.mycompany.knowledge.miami.publish.repository.PersonRepository;
 import com.mycompany.knowledge.miami.publish.springboot.MiamiPublishApplication;
 import lombok.val;
@@ -33,6 +34,9 @@ public class RepositoryTest {
 
     @Autowired
     PersonRepository personRepository;
+
+    @Autowired
+    MongoCaseBasicRepo mongoCaseBasicRepo;
 
     @Test
     //@Transactional
@@ -67,5 +71,11 @@ public class RepositoryTest {
         for(val b: biluRepository.findAll()) {
             System.out.println(b);
         }
+    }
+
+    @Test
+    @Transactional
+    public void testMongo(){
+        mongoCaseBasicRepo.getCaseByAJBH("A3711224700002017125009");
     }
 }
