@@ -4,14 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.mycompany.knowledge.miami.publish.engine.PublishEngine;
 import com.mycompany.knowledge.miami.publish.jena.FusekiJenaLibrary;
-import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
-import com.mycompany.knowledge.miami.publish.model.gongan.Case;
-import com.mycompany.knowledge.miami.publish.model.gongan.Person;
-import com.mycompany.knowledge.miami.publish.model.gongan.Relation;
-import com.mycompany.knowledge.miami.publish.repository.BiluRepository;
-import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
-import com.mycompany.knowledge.miami.publish.repository.PersonRepository;
-import com.mycompany.knowledge.miami.publish.repository.RelationRepository;
+import com.mycompany.knowledge.miami.publish.model.gongan.*;
+import com.mycompany.knowledge.miami.publish.repository.*;
 import lombok.val;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -33,7 +27,10 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PersonRepository personRepository;
     @Autowired
     private RelationRepository relationRepository;
-
+    @Autowired
+    private PhoneRelationRepository phoneRelationRepository;
+    @Autowired
+    private IdentityRelationRepository identityRelationRepository;
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
     private String inputModelName;
@@ -104,6 +101,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
             List<Bilu> biluList = new ArrayList<>();
             List<Relation> relationList = new ArrayList<>();
             List<Person> personList = new ArrayList<>();
+            List<PhoneRelation> phoneRelations = new ArrayList<>();
+            List<IdentityRelation> identityRelations = new ArrayList<>();
 
             for(val biluBase : aCaseBase.getBilus()){
                 val bilu  = new Bilu();
@@ -119,13 +118,18 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
                 for(val personBase : biluBase.getPerson()){
                     val relation = new Relation();
+                    val identityRelation = new IdentityRelation();
                     relation.setSubjectId(UUID.nameUUIDFromBytes((biluBase.getSubjectId() + personBase.getSubjectId()).getBytes()).toString());
                     relation.setPersonSubjectId(personBase.getSubjectId());
                     relation.setBiluSubjectId(biluBase.getSubjectId());
                     relation.setCaseSubjectId(aCase.getSubjectId());
+                    identityRelation.setSubjectId(UUID.nameUUIDFromBytes((aCase.getSubjectId()+bilu.getSubjectId()+personBase.getSubjectId()).getBytes()).toString());
+                    identityRelation.setIdentity(personBase.getIdentity());
+                    identityRelation.setBiluSubjectId(biluBase.getSubjectId());
+                    identityRelation.setCaseSubjectId(aCase.getSubjectId());
                     if(biluBase.getConnections().containsKey(personBase.getSubjectId()))
                         relation.setRole(biluBase.getConnections().get(personBase.getSubjectId()));
-
+                    identityRelations.add(identityRelation);
                     relationList.add(relation);
 
                     val person = new Person();
@@ -137,6 +141,14 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     person.setIdentity(personBase.getIdentity());
                     personList.add(person);
                 }
+                for(val phone : biluBase.getPhones().keySet()){
+                    val phoneRelation = new PhoneRelation();
+                    phoneRelation.setSubjectId(phone);
+                    phoneRelation.setPhoneNumber(biluBase.getPhones().get(phone));
+                    phoneRelation.setCaseSubjectId(aCase.getSubjectId());
+                    phoneRelation.setBiluSubjectId(biluBase.getSubjectId());
+                    phoneRelations.add(phoneRelation);
+                }
             }
 
             try {
@@ -145,6 +157,12 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
                 personRepository.save(personList);
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
+
+                phoneRelationRepository.save(phoneRelations);
+                logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
+
+                identityRelationRepository.save(identityRelations);
+                logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
                 caseRepository.save(aCase);

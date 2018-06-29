@@ -1,5 +1,5 @@
 jena:
-  modelName: biluDevFusion
+  modelName: biluDev
   fusekiURI: http://localhost:3330/knowledge
 
 
