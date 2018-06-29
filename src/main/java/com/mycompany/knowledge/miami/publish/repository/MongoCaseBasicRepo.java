@@ -40,7 +40,7 @@ public class MongoCaseBasicRepo<T>{
         // @jinzhao
         MongoCollection<Document> collection = mongoDatabase.getCollection("aj_basic");
         BasicDBObject query = new BasicDBObject("AJBH",caseId);
-        FindIterable<Document> findIterable = collection.find();
+        FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
         Case mongocase = new Case();
         while(mongoCursor.hasNext()){
