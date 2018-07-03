@@ -123,10 +123,12 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     relation.setPersonSubjectId(personBase.getSubjectId());
                     relation.setBiluSubjectId(biluBase.getSubjectId());
                     relation.setCaseSubjectId(aCase.getSubjectId());
-                    identityRelation.setSubjectId(UUID.nameUUIDFromBytes((aCase.getSubjectId()+bilu.getSubjectId()+personBase.getSubjectId()).getBytes()).toString());
-                    identityRelation.setIdentity(personBase.getIdentity());
-                    identityRelation.setBiluSubjectId(biluBase.getSubjectId());
-                    identityRelation.setCaseSubjectId(aCase.getSubjectId());
+                    if(personBase.getIdentity()!=null) {
+                        identityRelation.setSubjectId(UUID.nameUUIDFromBytes((aCase.getSubjectId() + bilu.getSubjectId() + personBase.getSubjectId()).getBytes()).toString());
+                        identityRelation.setIdentity(personBase.getIdentity());
+                        identityRelation.setBiluSubjectId(biluBase.getSubjectId());
+                        identityRelation.setCaseSubjectId(aCase.getSubjectId());
+                    }
                     if(biluBase.getConnections().containsKey(personBase.getSubjectId()))
                         relation.setRole(biluBase.getConnections().get(personBase.getSubjectId()));
                     identityRelations.add(identityRelation);
@@ -143,7 +145,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
                 for(val phone : biluBase.getPhones().keySet()){
                     val phoneRelation = new PhoneRelation();
-                    phoneRelation.setSubjectId(phone);
+                    phoneRelation.setSubjectId(UUID.nameUUIDFromBytes(phone.getBytes()).toString());
                     phoneRelation.setPhoneNumber(biluBase.getPhones().get(phone));
                     phoneRelation.setCaseSubjectId(aCase.getSubjectId());
                     phoneRelation.setBiluSubjectId(biluBase.getSubjectId());

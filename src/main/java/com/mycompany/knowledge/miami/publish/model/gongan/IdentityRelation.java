@@ -8,12 +8,14 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
-@Table(name = "IdentityRelation")
+@Table(name = "IdentityRelation",indexes = {@Index(columnList = "identity"),
+                        @Index(columnList = "caseSubjectId")})
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class IdentityRelation {
