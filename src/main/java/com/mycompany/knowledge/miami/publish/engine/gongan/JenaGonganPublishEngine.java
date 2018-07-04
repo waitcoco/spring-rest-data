@@ -32,6 +32,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private RelationRepository relationRepository;
     @Autowired
     private MongoCaseBasicRepo mongoCaseBasicRepo;
+    @Autowired
+    private PersonInfoGetter personInfoGetter;
 
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
@@ -135,6 +137,14 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     person.setBirthDay(personBase.getBirthDay());
                     person.setGender(personBase.getGender());
                     person.setIdentity(personBase.getIdentity());
+                    if(person.getIdentity()!= null){
+                        try{
+                            enrichPerson(person);
+                        }
+                        catch (Exception e){
+                            logger.error("person: " + person.getSubjectId() + " " + e.getMessage());
+                        }
+                    }
                     personList.add(person);
                 }
             }
@@ -177,6 +187,19 @@ public class JenaGonganPublishEngine implements PublishEngine{
         acase.setZBR_XM(mongoCase.getZBR_XM());
     }
 
+    private void enrichPerson(Person person) throws Exception{
+        Person basicPersonInfo = new Person();
+        basicPersonInfo = personInfoGetter.getPersonByIdentity(person.getIdentity());
+        person.setAddress(basicPersonInfo.getAddress());
+        person.setAge(basicPersonInfo.getAge());
+        person.setBloodType(basicPersonInfo.getBloodType());
+        person.setEthnicGroup(basicPersonInfo.getEthnicGroup());
+        person.setFormerName(basicPersonInfo.getFormerName());
+        person.setHeight(basicPersonInfo.getHeight());
+        person.setMaritalStatus(basicPersonInfo.getMaritalStatus());
+        person.setNativePlace(basicPersonInfo.getNativePlace());
+        person.setOccupation(basicPersonInfo.getOccupation());
+    }
 
     private BiluBase getBiluInfo(Model model, Resource resource) {
         BiluBase biluBase = new BiluBase();
