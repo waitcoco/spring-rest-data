@@ -53,7 +53,7 @@ public class PublishController {
 
     private void uploadBiluToEs(List<String> mongoIds) throws IOException {
         if (!esPublishEngine.indexExists()) {
-            esPublishEngine.createIndex("contentStream", "type=text,analyzer=cjk");
+            esPublishEngine.createIndex();
         }
 
         val biluList = mongoIds == null ? mongoBiluRepo.getBiluList() : mongoBiluRepo.getBiluList(mongoIds);
