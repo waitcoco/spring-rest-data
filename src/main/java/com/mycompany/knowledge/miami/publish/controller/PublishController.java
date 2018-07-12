@@ -46,12 +46,14 @@ public class PublishController {
 
     @PostMapping("/ES/clear")
     public void clearES() throws IOException {
-        esPublishEngine.deleteIndex();
+        if (esPublishEngine.indexExists()) {
+            esPublishEngine.deleteIndex();
+        }
     }
 
     private void uploadBiluToEs(List<String> mongoIds) throws IOException {
         if (!esPublishEngine.indexExists()) {
-            esPublishEngine.createIndex("contentStream", "type=text,analyzer=cjk");
+            esPublishEngine.createIndex();
         }
 
         val biluList = mongoIds == null ? mongoBiluRepo.getBiluList() : mongoBiluRepo.getBiluList(mongoIds);

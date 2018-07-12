@@ -10,9 +10,13 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
     show-sql: true
+mongo:
+  mongodburi: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
+  mongodb: zhinengtiaojie
+  docCollection: aj_basic

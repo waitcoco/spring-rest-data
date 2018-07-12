@@ -8,6 +8,11 @@ spring:
   data:
     mongodb:
       uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
+  datasource:
+      url: jdbc:mysql://47.104.8.27:6603/rizhaogongan
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.jdbc.Driver
 engine:
   type: jena2gongan
 
@@ -29,3 +34,7 @@ miami:
       index: bilu
       type: doc
       batchSize: 1000
+mongo:
+  mongodburi: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
+  mongodb: zhinengtiaojie
+  docCollection: aj_basic
