@@ -31,6 +31,11 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PhoneRelationRepository phoneRelationRepository;
     @Autowired
     private IdentityRelationRepository identityRelationRepository;
+    @Autowired
+    private MongoCaseBasicRepo mongoCaseBasicRepo;
+    @Autowired
+    private PersonInfoGetter personInfoGetter;
+
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
     private String inputModelName;
@@ -47,9 +52,10 @@ public class JenaGonganPublishEngine implements PublishEngine{
     }
 
 
-    public void publishCases(){
-        personRepository.deleteAll();
+
+    public void publishCases() {
         caseRepository.deleteAll();
+        personRepository.deleteAll();
         biluRepository.deleteAll();
         relationRepository.deleteAll();
         val model = fusekiJenaLibrary.getModel(inputModelName);
@@ -104,8 +110,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
             List<PhoneRelation> phoneRelations = new ArrayList<>();
             List<IdentityRelation> identityRelations = new ArrayList<>();
 
-            for(val biluBase : aCaseBase.getBilus()){
-                val bilu  = new Bilu();
+            for (val biluBase : aCaseBase.getBilus()) {
+                val bilu = new Bilu();
                 Gson gson = new Gson();
                 bilu.setContent(biluBase.getContent());
                 bilu.setName(biluBase.getName());
@@ -116,7 +122,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 bilu.setPhones(gson.toJson(biluBase.getPhones()));
                 biluList.add(bilu);
 
-                for(val personBase : biluBase.getPerson()){
+                for (val personBase : biluBase.getPerson()) {
                     val relation = new Relation();
                     val identityRelation = new IdentityRelation();
                     relation.setSubjectId(UUID.nameUUIDFromBytes((biluBase.getSubjectId() + personBase.getSubjectId()).getBytes()).toString());
@@ -141,6 +147,14 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     person.setBirthDay(personBase.getBirthDay());
                     person.setGender(personBase.getGender());
                     person.setIdentity(personBase.getIdentity());
+                    if(person.getIdentity()!= null){
+                        try{
+                            enrichPerson(person);
+                        }
+                        catch (Exception e){
+                            logger.error("person: " + person.getSubjectId() + " " + e.getMessage());
+                        }
+                    }
                     personList.add(person);
                 }
                 for(val phone : biluBase.getPhones().keySet()){
@@ -152,13 +166,12 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     phoneRelations.add(phoneRelation);
                 }
             }
-
             try {
                 relationRepository.save(relationList);
                 logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
-
                 personRepository.save(personList);
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
+              
 
                 phoneRelationRepository.save(phoneRelations);
                 logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
@@ -167,12 +180,51 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
+                enrichCaseFromMongo(aCase);
                 caseRepository.save(aCase);
-            }catch(Exception e)
-            {
+            } catch (Exception e) {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
+    }
+
+    private void enrichCaseFromMongo(Case acase) {
+        // todo
+        // 从mongo 里面拿case basic info, 然后塞到Case里面
+        Case mongoCase = new Case();
+        mongoCase = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
+        acase.setAJBH(mongoCase.getAJBH());
+        acase.setAJLX(mongoCase.getAJLX());
+        acase.setAJLXName(mongoCase.getAJLXName());
+        acase.setAJMC(mongoCase.getAJMC());
+        acase.setAJZT(mongoCase.getAJZT());
+        acase.setAJZTName(mongoCase.getAJZTName());
+        acase.setCBDW_BH(mongoCase.getCBDW_BH());
+        acase.setCBDW_MC(mongoCase.getCBDW_MC());
+        acase.setFADD(mongoCase.getFADD());
+        acase.setJQBH(mongoCase.getJQBH());
+        acase.setJYAQ(mongoCase.getJYAQ());
+        acase.setLASJ(mongoCase.getLASJ());
+        acase.setLRSJ(mongoCase.getLRSJ());
+        acase.setSLDW_MC(mongoCase.getSLDW_MC());
+        acase.setSLSJ(mongoCase.getSLSJ());
+        acase.setXYR_XM(mongoCase.getXYR_XM());
+        acase.setZBR_SFZH(mongoCase.getZBR_SFZH());
+        acase.setZBR_XM(mongoCase.getZBR_XM());
+    }
+
+    private void enrichPerson(Person person) throws Exception{
+        Person basicPersonInfo = new Person();
+        basicPersonInfo = personInfoGetter.getPersonByIdentity(person.getIdentity());
+        person.setAddress(basicPersonInfo.getAddress());
+        person.setAge(basicPersonInfo.getAge());
+        person.setBloodType(basicPersonInfo.getBloodType());
+        person.setEthnicGroup(basicPersonInfo.getEthnicGroup());
+        person.setFormerName(basicPersonInfo.getFormerName());
+        person.setHeight(basicPersonInfo.getHeight());
+        person.setMaritalStatus(basicPersonInfo.getMaritalStatus());
+        person.setNativePlace(basicPersonInfo.getNativePlace());
+        person.setOccupation(basicPersonInfo.getOccupation());
     }
 
     private BiluBase getBiluInfo(Model model, Resource resource) {
