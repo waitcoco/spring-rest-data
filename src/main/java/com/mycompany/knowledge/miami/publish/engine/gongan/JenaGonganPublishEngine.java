@@ -12,6 +12,11 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +36,9 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PhoneRelationRepository phoneRelationRepository;
     @Autowired
     private IdentityRelationRepository identityRelationRepository;
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
+    private EntityTransaction transaction;
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
     private String inputModelName;
@@ -118,20 +126,21 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
                 for(val personBase : biluBase.getPerson()){
                     val relation = new Relation();
-                    val identityRelation = new IdentityRelation();
+
                     relation.setSubjectId(UUID.nameUUIDFromBytes((biluBase.getSubjectId() + personBase.getSubjectId()).getBytes()).toString());
                     relation.setPersonSubjectId(personBase.getSubjectId());
                     relation.setBiluSubjectId(biluBase.getSubjectId());
                     relation.setCaseSubjectId(aCase.getSubjectId());
                     if(personBase.getIdentity()!=null) {
+                        val identityRelation = new IdentityRelation();
                         identityRelation.setSubjectId(UUID.nameUUIDFromBytes((aCase.getSubjectId() + bilu.getSubjectId() + personBase.getSubjectId()).getBytes()).toString());
                         identityRelation.setIdentity(personBase.getIdentity());
                         identityRelation.setBiluSubjectId(biluBase.getSubjectId());
                         identityRelation.setCaseSubjectId(aCase.getSubjectId());
+                        identityRelations.add(identityRelation);
                     }
                     if(biluBase.getConnections().containsKey(personBase.getSubjectId()))
                         relation.setRole(biluBase.getConnections().get(personBase.getSubjectId()));
-                    identityRelations.add(identityRelation);
                     relationList.add(relation);
 
                     val person = new Person();
@@ -145,7 +154,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
                 for(val phone : biluBase.getPhones().keySet()){
                     val phoneRelation = new PhoneRelation();
-                    phoneRelation.setSubjectId(UUID.nameUUIDFromBytes(phone.getBytes()).toString());
+                    phoneRelation.setSubjectId(UUID.nameUUIDFromBytes((bilu.getSubjectId()+phone).getBytes()).toString());
                     phoneRelation.setPhoneNumber(biluBase.getPhones().get(phone));
                     phoneRelation.setCaseSubjectId(aCase.getSubjectId());
                     phoneRelation.setBiluSubjectId(biluBase.getSubjectId());
@@ -154,20 +163,64 @@ public class JenaGonganPublishEngine implements PublishEngine{
             }
 
             try {
-                relationRepository.save(relationList);
+                List<Relation> relationBatchList = new ArrayList<>();
+                for(Relation relation : relationList){
+                    if(relationBatchList.size() == 100){
+                        relationRepository.save(relationBatchList);
+                        relationBatchList.clear();
+                    }
+                    relationBatchList.add(relation);
+                    if(!relationBatchList.isEmpty())
+                        relationRepository.save(relationBatchList);
+                }
                 logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
-                personRepository.save(personList);
+                List<Person> personBatchList = new ArrayList<>();
+                for(Person person : personList){
+                    if(personBatchList.size() == 100){
+                        personRepository.save(personBatchList);
+                        personBatchList.clear();
+                    }
+                    personBatchList.add(person);
+                    if(!personBatchList.isEmpty())
+                        personRepository.save(personBatchList);
+                }
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
-                phoneRelationRepository.save(phoneRelations);
+                List<PhoneRelation> phoneRelationBatchList = new ArrayList<>();
+                for(PhoneRelation phoneRelation : phoneRelations){
+                    if(phoneRelationBatchList.size() == 100){
+                        phoneRelationRepository.save(phoneRelationBatchList);
+                        phoneRelationBatchList.clear();
+                    }
+                    phoneRelationBatchList.add(phoneRelation);
+                    if(!phoneRelationBatchList.isEmpty())
+                        phoneRelationRepository.save(phoneRelationBatchList);
+                }
                 logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
-                identityRelationRepository.save(identityRelations);
+                List<IdentityRelation> identityRelationBatchList = new ArrayList<>();
+                for(IdentityRelation identityRelation : identityRelations){
+                    if(identityRelationBatchList.size() == 100){
+                        identityRelationRepository.save(identityRelationBatchList);
+                        identityRelationBatchList.clear();
+                    }
+                    identityRelationBatchList.add(identityRelation);
+                    if(!identityRelationBatchList.isEmpty())
+                        identityRelationRepository.save(identityRelationBatchList);
+                }
                 logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
-                caseRepository.save(aCase);
+
+                List<Case> caseBatchList = new ArrayList<>();
+                if(caseBatchList.size() == 30){
+                    caseRepository.save(caseBatchList);
+                    caseBatchList.clear();
+                }
+                caseBatchList.add(aCase);
+                if(!caseBatchList.isEmpty())
+                    caseRepository.save(caseBatchList);
             }catch(Exception e)
             {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
