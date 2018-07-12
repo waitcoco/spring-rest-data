@@ -22,6 +22,16 @@ public class Person {
     private String gender;
     private String birthDay;
     private String identity;
+    private String formerName;
+    private Integer age;
+    private String maritalStatus;
+    private String nativePlace;
+    private String ethnicGroup;
+    private String bloodType;
+    private String occupation;
+    private String address;
+    private String height;
+
 //    @ManyToMany
 //    @JoinColumn(name = "bilu_subject_id")
 //    private List<Bilu> bilus;

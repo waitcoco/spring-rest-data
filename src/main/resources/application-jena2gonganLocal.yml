@@ -1,5 +1,5 @@
 jena:
-  modelName: biluDev
+  modelName: biluDevDelta
   fusekiURI: http://localhost:3330/knowledge
 
 
@@ -41,3 +41,5 @@ mongo:
   mongodburi: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   mongodb: zhinengtiaojie
   docCollection: aj_basic
+person:
+  personurl: http://tahiti-api.test.richinfoai.com/api/v2/person/

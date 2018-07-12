@@ -4,10 +4,7 @@ package com.mycompany.knowledge.miami.publish.repositroy;
 import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.model.gongan.Person;
-import com.mycompany.knowledge.miami.publish.repository.BiluRepository;
-import com.mycompany.knowledge.miami.publish.repository.CaseRepository;
-import com.mycompany.knowledge.miami.publish.repository.MongoCaseBasicRepo;
-import com.mycompany.knowledge.miami.publish.repository.PersonRepository;
+import com.mycompany.knowledge.miami.publish.repository.*;
 import com.mycompany.knowledge.miami.publish.springboot.MiamiPublishApplication;
 import lombok.val;
 import org.junit.Test;
@@ -37,6 +34,9 @@ public class RepositoryTest {
 
     @Autowired
     MongoCaseBasicRepo mongoCaseBasicRepo;
+
+    @Autowired
+    PersonInfoGetter personInfoGetter;
 
     @Test
     //@Transactional
@@ -77,5 +77,18 @@ public class RepositoryTest {
     @Transactional
     public void testMongo(){
         mongoCaseBasicRepo.getCaseByAJBH("A3711224700002017125009");
+    }
+
+    @Test
+    @Transactional
+    public void testPersonInfoGetter(){
+
+        Person person = new Person();
+        try{
+            person = personInfoGetter.getPersonByIdentity("420101197710219421");
+        }
+        catch(Exception e){
+            System.out.println("error");
+        }
     }
 }
