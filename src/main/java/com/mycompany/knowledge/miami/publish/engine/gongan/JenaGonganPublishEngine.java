@@ -64,6 +64,9 @@ public class JenaGonganPublishEngine implements PublishEngine{
         personRepository.deleteAll();
         biluRepository.deleteAll();
         relationRepository.deleteAll();
+        phoneRelationRepository.deleteAll();
+        identityRelationRepository.deleteAll();
+        long startTime = System.currentTimeMillis();
         val model = fusekiJenaLibrary.getModel(inputModelName);
         if (model == null) {
             throw new RuntimeException("Can not get model " + inputModelName);
@@ -174,73 +177,28 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
             try {
-                List<Relation> relationBatchList = new ArrayList<>();
-                for(Relation relation : relationList){
-                    if(relationBatchList.size() == 100){
-                        relationRepository.save(relationBatchList);
-                        relationBatchList.clear();
-                    }
-                    relationBatchList.add(relation);
-                    if(!relationBatchList.isEmpty())
-                        relationRepository.save(relationBatchList);
-                }
+                relationRepository.save(relationList);
                 logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
-                List<Person> personBatchList = new ArrayList<>();
-                for(Person person : personList){
-                    if(personBatchList.size() == 100){
-                        personRepository.save(personBatchList);
-                        personBatchList.clear();
-                    }
-                    personBatchList.add(person);
-                    if(!personBatchList.isEmpty())
-                        personRepository.save(personBatchList);
-                }
-
+                personRepository.save(personList);
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
-              
 
-                List<PhoneRelation> phoneRelationBatchList = new ArrayList<>();
-                for(PhoneRelation phoneRelation : phoneRelations){
-                    if(phoneRelationBatchList.size() == 100){
-                        phoneRelationRepository.save(phoneRelationBatchList);
-                        phoneRelationBatchList.clear();
-                    }
-                    phoneRelationBatchList.add(phoneRelation);
-                    if(!phoneRelationBatchList.isEmpty())
-                        phoneRelationRepository.save(phoneRelationBatchList);
-                }
+                phoneRelationRepository.save(phoneRelations);
                 logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
-                List<IdentityRelation> identityRelationBatchList = new ArrayList<>();
-                for(IdentityRelation identityRelation : identityRelations){
-                    if(identityRelationBatchList.size() == 100){
-                        identityRelationRepository.save(identityRelationBatchList);
-                        identityRelationBatchList.clear();
-                    }
-                    identityRelationBatchList.add(identityRelation);
-                    if(!identityRelationBatchList.isEmpty())
-                        identityRelationRepository.save(identityRelationBatchList);
-                }
+                identityRelationRepository.save(identityRelations);
                 logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
-
-                List<Case> caseBatchList = new ArrayList<>();
-                if(caseBatchList.size() == 30){
-                    caseRepository.save(caseBatchList);
-                    caseBatchList.clear();
-                }
-                caseBatchList.add(aCase);
-                if(!caseBatchList.isEmpty())
-                    caseRepository.save(caseBatchList);
-            }catch(Exception e)
-            {
                 enrichCaseFromMongo(aCase);
                 caseRepository.save(aCase);
+            }catch(Exception e)
+            {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("时间:" +(endTime-startTime)+"ms");
     }
 
     private void enrichCaseFromMongo(Case acase) {
