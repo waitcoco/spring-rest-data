@@ -1,6 +1,7 @@
 package com.mycompany.knowledge.miami.publish.repositroy;
 
 
+import com.mycompany.knowledge.miami.publish.engine.gongan.JenaGonganPublishEngine;
 import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
 import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.model.gongan.Person;
@@ -90,5 +91,14 @@ public class RepositoryTest {
         catch(Exception e){
             System.out.println("error");
         }
+    }
+
+    @Test
+    public void testTime(){
+        JenaGonganPublishEngine jenaGonganPublishEngine = new JenaGonganPublishEngine("http://localhost:3330/knowledge","biluDevDelta");
+        long startTime = System.currentTimeMillis();
+        jenaGonganPublishEngine.publishCases();
+        long endTime = System.currentTimeMillis();
+        System.out.println("时间:" +(endTime-startTime)+"ms");
     }
 }

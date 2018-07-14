@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.mycompany.knowledge.miami.publish.engine.PublishEngine;
 import com.mycompany.knowledge.miami.publish.jena.FusekiJenaLibrary;
-import com.mycompany.knowledge.miami.publish.model.gongan.Bilu;
-import com.mycompany.knowledge.miami.publish.model.gongan.Case;
-import com.mycompany.knowledge.miami.publish.model.gongan.Person;
-import com.mycompany.knowledge.miami.publish.model.gongan.Relation;
+import com.mycompany.knowledge.miami.publish.model.gongan.*;
 import com.mycompany.knowledge.miami.publish.repository.*;
 import lombok.val;
 import org.apache.jena.rdf.model.Model;
@@ -15,6 +12,11 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +32,11 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PersonRepository personRepository;
     @Autowired
     private RelationRepository relationRepository;
+    @Autowired
+    private PhoneRelationRepository phoneRelationRepository;
+    @Autowired
+    private IdentityRelationRepository identityRelationRepository;
+
     @Autowired
     private MongoCaseBasicRepo mongoCaseBasicRepo;
     @Autowired
@@ -57,6 +64,9 @@ public class JenaGonganPublishEngine implements PublishEngine{
         personRepository.deleteAll();
         biluRepository.deleteAll();
         relationRepository.deleteAll();
+        phoneRelationRepository.deleteAll();
+        identityRelationRepository.deleteAll();
+        long startTime = System.currentTimeMillis();
         val model = fusekiJenaLibrary.getModel(inputModelName);
         if (model == null) {
             throw new RuntimeException("Can not get model " + inputModelName);
@@ -106,6 +116,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
             List<Bilu> biluList = new ArrayList<>();
             List<Relation> relationList = new ArrayList<>();
             List<Person> personList = new ArrayList<>();
+            List<PhoneRelation> phoneRelations = new ArrayList<>();
+            List<IdentityRelation> identityRelations = new ArrayList<>();
 
             for (val biluBase : aCaseBase.getBilus()) {
                 val bilu = new Bilu();
@@ -121,13 +133,21 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
                 for (val personBase : biluBase.getPerson()) {
                     val relation = new Relation();
+
                     relation.setSubjectId(UUID.nameUUIDFromBytes((biluBase.getSubjectId() + personBase.getSubjectId()).getBytes()).toString());
                     relation.setPersonSubjectId(personBase.getSubjectId());
                     relation.setBiluSubjectId(biluBase.getSubjectId());
                     relation.setCaseSubjectId(aCase.getSubjectId());
-                    if (biluBase.getConnections().containsKey(personBase.getSubjectId()))
+                    if(personBase.getIdentity()!=null) {
+                        val identityRelation = new IdentityRelation();
+                        identityRelation.setSubjectId(UUID.nameUUIDFromBytes((aCase.getSubjectId() + bilu.getSubjectId() + personBase.getSubjectId()).getBytes()).toString());
+                        identityRelation.setIdentity(personBase.getIdentity());
+                        identityRelation.setBiluSubjectId(biluBase.getSubjectId());
+                        identityRelation.setCaseSubjectId(aCase.getSubjectId());
+                        identityRelations.add(identityRelation);
+                    }
+                    if(biluBase.getConnections().containsKey(personBase.getSubjectId()))
                         relation.setRole(biluBase.getConnections().get(personBase.getSubjectId()));
-
                     relationList.add(relation);
 
                     val person = new Person();
@@ -147,19 +167,38 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     }
                     personList.add(person);
                 }
+                for(val phone : biluBase.getPhones().keySet()){
+                    val phoneRelation = new PhoneRelation();
+                    phoneRelation.setSubjectId(UUID.nameUUIDFromBytes((bilu.getSubjectId()+phone).getBytes()).toString());
+                    phoneRelation.setPhoneNumber(biluBase.getPhones().get(phone));
+                    phoneRelation.setCaseSubjectId(aCase.getSubjectId());
+                    phoneRelation.setBiluSubjectId(biluBase.getSubjectId());
+                    phoneRelations.add(phoneRelation);
+                }
             }
             try {
                 relationRepository.save(relationList);
                 logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
+
                 personRepository.save(personList);
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
+
+                phoneRelationRepository.save(phoneRelations);
+                logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
+
+                identityRelationRepository.save(identityRelations);
+                logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
+
                 aCase.setBilus(biluList);
                 enrichCaseFromMongo(aCase);
                 caseRepository.save(aCase);
-            } catch (Exception e) {
+            }catch(Exception e)
+            {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("时间:" +(endTime-startTime)+"ms");
     }
 
     private void enrichCaseFromMongo(Case acase) {
