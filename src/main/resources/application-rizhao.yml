@@ -34,3 +34,8 @@ miami:
         bilu: biluDocInfo
     elasticsearch:
       host: http://10.53.187.39:9200,http://10.53.187.40:9200,http://10.53.187.41:9200
+
+mongo:
+  mongodburi: mongodb://miami-mongodb:27017/biluProdRizhao
+  mongodb: bihuan
+  docCollection: aj_basic
