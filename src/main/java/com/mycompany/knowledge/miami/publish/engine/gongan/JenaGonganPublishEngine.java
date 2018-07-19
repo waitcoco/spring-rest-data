@@ -36,11 +36,12 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PhoneRelationRepository phoneRelationRepository;
     @Autowired
     private IdentityRelationRepository identityRelationRepository;
-
     @Autowired
     private MongoCaseBasicRepo mongoCaseBasicRepo;
     @Autowired
     private PersonInfoGetter personInfoGetter;
+    @Autowired
+    private DataSaver dataSaver;
 
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
@@ -66,7 +67,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
         relationRepository.deleteAll();
         phoneRelationRepository.deleteAll();
         identityRelationRepository.deleteAll();
-        long startTime = System.currentTimeMillis();
+
         val model = fusekiJenaLibrary.getModel(inputModelName);
         if (model == null) {
             throw new RuntimeException("Can not get model " + inputModelName);
@@ -177,7 +178,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
             try {
-                relationRepository.save(relationList);
+                long startTime = System.currentTimeMillis();
+                dataSaver.saveData(relationList,"relation");
                 logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
                 personRepository.save(personList);
@@ -192,13 +194,14 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 aCase.setBilus(biluList);
                 enrichCaseFromMongo(aCase);
                 caseRepository.save(aCase);
+                long endTime = System.currentTimeMillis();
+                System.out.println("时间:" +(endTime-startTime)+"ms");
             }catch(Exception e)
             {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("时间:" +(endTime-startTime)+"ms");
+
     }
 
     private void enrichCaseFromMongo(Case acase) {
