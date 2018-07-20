@@ -12,11 +12,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -179,24 +174,33 @@ public class JenaGonganPublishEngine implements PublishEngine{
             }
             try {
                 long startTime = System.currentTimeMillis();
-                dataSaver.saveData(relationList,"relation");
+                dataSaver.saveRelation(relationList);
                 logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
+                //dataSaver.savePerson(personList);
                 personRepository.save(personList);
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
-                phoneRelationRepository.save(phoneRelations);
+                //phoneRelationRepository.save(phoneRelations);
+                dataSaver.savePhoneRelation(phoneRelations);
                 logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
-                identityRelationRepository.save(identityRelations);
+                //identityRelationRepository.save(identityRelations);
+                dataSaver.saveIdentityRelation(identityRelations);
                 logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
-                enrichCaseFromMongo(aCase);
+                try{
+                    enrichCaseFromMongo(aCase);
+                }
+                catch (Exception e){
+                    logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
+                }
                 caseRepository.save(aCase);
                 long endTime = System.currentTimeMillis();
                 System.out.println("时间:" +(endTime-startTime)+"ms");
-            }catch(Exception e)
+            }
+            catch(Exception e)
             {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
             }
