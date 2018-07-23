@@ -69,7 +69,6 @@ public class JenaGonganPublishEngine implements PublishEngine{
         }
 
         val iterator = fusekiJenaLibrary.getStatementsByEntityType(model, "gongan:gongan.case");
-        long sum = 0;
         int i = 0;
         while (iterator.hasNext()) {
             Resource resource = iterator.next().getSubject();
@@ -208,8 +207,6 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
                 caseRepository.save(aCase);
                 i++;
-                long endTime = System.currentTimeMillis();
-                sum+= endTime-startTime;
                 //System.out.println("时间:" +(endTime-startTime)+"ms");
             }
             catch(Exception e)
@@ -217,7 +214,6 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
-        System.out.println(sum);
         System.out.println("案件数量："+i);
     }
 
