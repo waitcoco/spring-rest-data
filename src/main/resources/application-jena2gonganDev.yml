@@ -20,4 +20,4 @@ jdbc:
   user: root
   password: 123456
   driverClass: com.mysql.jdbc.Driver
-  jdbcUrl: jdbc:mysql://47.104.8.27:6603/rizhaogongan
+  jdbcUrl: jdbc:mysql://localhost:6603/rizhaogongan
