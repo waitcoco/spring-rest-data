@@ -12,11 +12,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -36,11 +31,12 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private PhoneRelationRepository phoneRelationRepository;
     @Autowired
     private IdentityRelationRepository identityRelationRepository;
-
     @Autowired
     private MongoCaseBasicRepo mongoCaseBasicRepo;
     @Autowired
     private PersonInfoGetter personInfoGetter;
+    @Autowired
+    private DataSaver dataSaver;
 
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
@@ -66,14 +62,14 @@ public class JenaGonganPublishEngine implements PublishEngine{
         relationRepository.deleteAll();
         phoneRelationRepository.deleteAll();
         identityRelationRepository.deleteAll();
-        long startTime = System.currentTimeMillis();
+
         val model = fusekiJenaLibrary.getModel(inputModelName);
         if (model == null) {
             throw new RuntimeException("Can not get model " + inputModelName);
         }
 
         val iterator = fusekiJenaLibrary.getStatementsByEntityType(model, "gongan:gongan.case");
-
+        int i = 0;
         while (iterator.hasNext()) {
             Resource resource = iterator.next().getSubject();
 
@@ -162,7 +158,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                             enrichPerson(person);
                         }
                         catch (Exception e){
-                            logger.error("person: " + person.getSubjectId() + " " + e.getMessage());
+                            logger.error("person: person cannot be enriched!" + person.getSubjectId() + " " + e.getMessage());
                         }
                     }
                     personList.add(person);
@@ -177,31 +173,50 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
             try {
-                relationRepository.save(relationList);
-                logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
+                if(relationList.size()!=0){
+                    dataSaver.saveRelation(relationList);
+                }
+                //relationRepository.save(relationList);
+                //logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
-                personRepository.save(personList);
-                logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
+                if(personList.size()!=0){
+                    dataSaver.savePerson(personList);
+                }
+                //personRepository.save(personList);
+                //logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
-                phoneRelationRepository.save(phoneRelations);
-                logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
+                //phoneRelationRepository.save(phoneRelations);
+                if(phoneRelations.size()!=0){
+                    dataSaver.savePhoneRelation(phoneRelations);
+                }
+                //logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
-                identityRelationRepository.save(identityRelations);
-                logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
+                //identityRelationRepository.save(identityRelations);
+                if(identityRelations.size()!=0){
+                    dataSaver.saveIdentityRelation(identityRelations);
+                }
+                //logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
-                enrichCaseFromMongo(aCase);
+                try{
+                    enrichCaseFromMongo(aCase);
+                }
+                catch (Exception e){
+                    logger.error("case: case cannot be enriched!" + aCase.getSubjectId() + " " + e.getMessage());
+                }
                 caseRepository.save(aCase);
-            }catch(Exception e)
+                i++;
+                //System.out.println("时间:" +(endTime-startTime)+"ms");
+            }
+            catch(Exception e)
             {
-                logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
+                logger.error("case: data save error!" + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("时间:" +(endTime-startTime)+"ms");
+        System.out.println("案件数量："+i);
     }
 
-    private void enrichCaseFromMongo(Case acase) {
+    private void enrichCaseFromMongo(Case acase) throws Exception{
         // todo
         // 从mongo 里面拿case basic info, 然后塞到Case里面
         Case mongoCase = new Case();

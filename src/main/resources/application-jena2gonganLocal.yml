@@ -1,5 +1,5 @@
 jena:
-  modelName: biluDevDelta
+  modelName: biluDev
   fusekiURI: http://localhost:3330/knowledge
 
 
@@ -26,8 +26,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        #show_sql: true
+        #format_sql: true
+        #use_sql_comments: true
+        generate_statistics: true
 
-    show-sql: true
+    show-sql: false
 
 miami:
   publish:
@@ -37,9 +41,21 @@ miami:
         bilu: tiaojieDocInfoLocal
     elasticsearch:
       host: http://localhost:9200
+
 mongo:
   mongodburi: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   mongodb: zhinengtiaojie
   docCollection: aj_basic
+
 person:
   personurl: http://tahiti-api.test.richinfoai.com/api/v2/person/
+
+jdbc:
+  user: root
+  password: 123456
+  driverClass: com.mysql.jdbc.Driver
+  jdbcUrl: jdbc:mysql://localhost:6603/rizhaogongan
+
+logging:
+  level:
+    org.hibernate.stat=debug

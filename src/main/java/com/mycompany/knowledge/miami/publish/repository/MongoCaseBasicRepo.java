@@ -33,7 +33,7 @@ public class MongoCaseBasicRepo<T>{
         }
     }
 
-    public Case getCaseByAJBH(String caseId){
+    public Case getCaseByAJBH(String caseId) throws Exception{
         // todo
         // @jinzhao
         BasicDBObject query = new BasicDBObject("AJBH",caseId);
