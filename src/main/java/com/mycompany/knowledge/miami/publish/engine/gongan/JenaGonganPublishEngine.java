@@ -69,7 +69,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
         }
 
         val iterator = fusekiJenaLibrary.getStatementsByEntityType(model, "gongan:gongan.case");
-
+        long sum = 0;
+        int i = 0;
         while (iterator.hasNext()) {
             Resource resource = iterator.next().getSubject();
 
@@ -174,19 +175,28 @@ public class JenaGonganPublishEngine implements PublishEngine{
             }
             try {
                 long startTime = System.currentTimeMillis();
-                dataSaver.saveRelation(relationList);
+                if(relationList.size()!=0){
+                    dataSaver.saveRelation(relationList);
+                }
+                //relationRepository.save(relationList);
                 logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
-                //dataSaver.savePerson(personList);
-                personRepository.save(personList);
+                if(personList.size()!=0){
+                    dataSaver.savePerson(personList);
+                }
+                //personRepository.save(personList);
                 logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
                 //phoneRelationRepository.save(phoneRelations);
-                dataSaver.savePhoneRelation(phoneRelations);
+                if(phoneRelations.size()!=0){
+                    dataSaver.savePhoneRelation(phoneRelations);
+                }
                 logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
                 //identityRelationRepository.save(identityRelations);
-                dataSaver.saveIdentityRelation(identityRelations);
+                if(identityRelations.size()!=0){
+                    dataSaver.saveIdentityRelation(identityRelations);
+                }
                 logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
@@ -197,18 +207,21 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
                 }
                 caseRepository.save(aCase);
+                i++;
                 long endTime = System.currentTimeMillis();
-                System.out.println("时间:" +(endTime-startTime)+"ms");
+                sum+= endTime-startTime;
+                //System.out.println("时间:" +(endTime-startTime)+"ms");
             }
             catch(Exception e)
             {
                 logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
-
+        System.out.println(sum);
+        System.out.println("案件数量："+i);
     }
 
-    private void enrichCaseFromMongo(Case acase) {
+    private void enrichCaseFromMongo(Case acase) throws Exception{
         // todo
         // 从mongo 里面拿case basic info, 然后塞到Case里面
         Case mongoCase = new Case();

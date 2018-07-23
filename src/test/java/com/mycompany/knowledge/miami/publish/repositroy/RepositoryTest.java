@@ -74,11 +74,6 @@ public class RepositoryTest {
         }
     }
 
-    @Test
-    @Transactional
-    public void testMongo(){
-        mongoCaseBasicRepo.getCaseByAJBH("A3711224700002017125009");
-    }
 
     @Test
     @Transactional
