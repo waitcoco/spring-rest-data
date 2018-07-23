@@ -16,3 +16,8 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
     show-sql: true
+jdbc:
+  user: root
+  password: 123456
+  driverClass: com.mysql.jdbc.Driver
+  jdbcUrl: jdbc:mysql://localhost:6603/rizhaogongan
