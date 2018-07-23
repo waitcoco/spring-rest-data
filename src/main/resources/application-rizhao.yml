@@ -34,8 +34,15 @@ miami:
         bilu: biluDocInfo
     elasticsearch:
       host: http://10.53.187.39:9200,http://10.53.187.40:9200,http://10.53.187.41:9200
+
 jdbc:
   jdbcUrl: jdbc:mysql://miami-mysql:3306/miami
   user: miami
   password: miami
   driverClass: com.mysql.jdbc.Driver
+
+mongo:
+  mongodburi: mongodb://10.53.187.41:27017
+  mongodb: bihuan
+  docCollection: aj_basic
+
