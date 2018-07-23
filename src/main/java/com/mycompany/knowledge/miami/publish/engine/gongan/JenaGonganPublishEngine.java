@@ -173,30 +173,29 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
             try {
-                long startTime = System.currentTimeMillis();
                 if(relationList.size()!=0){
                     dataSaver.saveRelation(relationList);
                 }
                 //relationRepository.save(relationList);
-                logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
+                //logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
                 if(personList.size()!=0){
                     dataSaver.savePerson(personList);
                 }
                 //personRepository.save(personList);
-                logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
+                //logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
                 //phoneRelationRepository.save(phoneRelations);
                 if(phoneRelations.size()!=0){
                     dataSaver.savePhoneRelation(phoneRelations);
                 }
-                logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
+                //logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
                 //identityRelationRepository.save(identityRelations);
                 if(identityRelations.size()!=0){
                     dataSaver.saveIdentityRelation(identityRelations);
                 }
-                logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
+                //logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
                 try{
