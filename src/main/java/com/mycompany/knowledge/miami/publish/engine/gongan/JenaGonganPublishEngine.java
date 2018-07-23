@@ -158,7 +158,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                             enrichPerson(person);
                         }
                         catch (Exception e){
-                            logger.error("person: " + person.getSubjectId() + " " + e.getMessage());
+                            logger.error("person: person cannot be enriched!" + person.getSubjectId() + " " + e.getMessage());
                         }
                     }
                     personList.add(person);
@@ -202,7 +202,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                     enrichCaseFromMongo(aCase);
                 }
                 catch (Exception e){
-                    logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
+                    logger.error("case: case cannot be enriched!" + aCase.getSubjectId() + " " + e.getMessage());
                 }
                 caseRepository.save(aCase);
                 i++;
@@ -210,7 +210,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
             }
             catch(Exception e)
             {
-                logger.error("case: " + aCase.getSubjectId() + " " + e.getMessage());
+                logger.error("case: data save error!" + aCase.getSubjectId() + " " + e.getMessage());
             }
         }
         System.out.println("案件数量："+i);
