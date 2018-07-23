@@ -158,7 +158,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                             enrichPerson(person);
                         }
                         catch (Exception e){
-                            logger.error("person: person cannot be enriched!" + person.getSubjectId() + " " + e.getMessage());
+                            //logger.error("person: person cannot be enriched!" + person.getSubjectId() + " " + e.getMessage());
                         }
                     }
                     personList.add(person);
@@ -173,27 +173,47 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
             try {
-                if(relationList.size()!=0){
-                    dataSaver.saveRelation(relationList);
+                try{
+                    if(relationList.size()!=0){
+                        dataSaver.saveRelation(relationList);
+                    }
+                }
+                catch(Exception e){
+                    logger.error("save relationlist error!"+ aCase.getSubjectId() + " " + e.getMessage());
                 }
                 //relationRepository.save(relationList);
                 //logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
-                if(personList.size()!=0){
-                    dataSaver.savePerson(personList);
+                try{
+                    if(personList.size()!=0){
+                        dataSaver.savePerson(personList);
+                    }
+                }
+                catch(Exception e){
+                    logger.error("save personlist error!"+ aCase.getSubjectId() + " " + e.getMessage());
                 }
                 //personRepository.save(personList);
                 //logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
                 //phoneRelationRepository.save(phoneRelations);
-                if(phoneRelations.size()!=0){
-                    dataSaver.savePhoneRelation(phoneRelations);
+                try{
+                    if(phoneRelations.size()!=0){
+                        dataSaver.savePhoneRelation(phoneRelations);
+                    }
+                }
+                catch(Exception e){
+                    logger.error("save phonerelation error!"+ aCase.getSubjectId() + " " + e.getMessage());
                 }
                 //logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
                 //identityRelationRepository.save(identityRelations);
-                if(identityRelations.size()!=0){
-                    dataSaver.saveIdentityRelation(identityRelations);
+                try{
+                    if(identityRelations.size()!=0){
+                        dataSaver.saveIdentityRelation(identityRelations);
+                    }
+                }
+                catch(Exception e){
+                    logger.error("save identityrelation error!"+ aCase.getSubjectId() + " " + e.getMessage());
                 }
                 //logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
