@@ -102,13 +102,13 @@ public class DataSaver {
                     '"'+list.get(i).getBiluSubjectId()+'"'+","+'"'+list.get(i).getCaseSubjectId()+'"'+"),");
             if(i%999 == 0){
                 if(values.length()!=0){
-                    jdbcTemplate.update("insert into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+                    jdbcTemplate.update("insert ignore into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
                     values.setLength(0);
                 }
             }
         }
         if(values.length()!=0){
-            jdbcTemplate.update("insert into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+            jdbcTemplate.update("insert ignore into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
         }
     }
 
