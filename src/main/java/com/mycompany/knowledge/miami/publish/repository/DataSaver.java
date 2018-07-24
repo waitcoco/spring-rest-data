@@ -44,11 +44,16 @@ public class DataSaver {
             values = values.append("("+'"'+list.get(i).getSubjectId()+'"'+","+'"'+list.get(i).getPersonSubjectId()+'"'+","+
                     '"'+list.get(i).getBiluSubjectId()+'"'+","+'"'+list.get(i).getCaseSubjectId()+'"'+","+'"'+list.get(i).getRole()+'"'+"),");
             if(i%999 == 0){
-                jdbcTemplate.update("insert ignore into relation (subject_id,person_subject_id,bilu_subject_id,case_subject_id,role) values"+values.substring(0,values.length()-1));
-                values.setLength(0);
+                if(values.length()!=0){
+                    jdbcTemplate.update("insert ignore into relation (subject_id,person_subject_id,bilu_subject_id,case_subject_id,role) values"+values.substring(0,values.length()-1));
+                    values.setLength(0);
+                }
+
             }
         }
-        jdbcTemplate.update("insert ignore into relation (subject_id,person_subject_id,bilu_subject_id,case_subject_id,role) values"+values.substring(0,values.length()-1));
+        if(values.length()!=0){
+            jdbcTemplate.update("insert ignore into relation (subject_id,person_subject_id,bilu_subject_id,case_subject_id,role) values"+values.substring(0,values.length()-1));
+        }
     }
 
     public void savePerson(List<Person> personList){
@@ -62,11 +67,15 @@ public class DataSaver {
                     +list.get(i).getEthnicGroup()+'"'+","+'"'+list.get(i).getBloodType()+'"'+","+ '"'+list.get(i).getOccupation()+'"'
                     +","+'"'+list.get(i).getAddress()+'"'+","+'"'+list.get(i).getHeight()+'"'+"),");
             if(i%999 == 0){
-                jdbcTemplate.update("insert ignore into person(subject_id,name,phone,gender,birth_day,identity,former_name,age,marital_status,native_place,ethnic_group,blood_type,occupation,address,height) values"+values.substring(0,values.length()-1));
-                values.setLength(0);
+                if(values.length()!=0){
+                    jdbcTemplate.update("insert ignore into person(subject_id,name,phone,gender,birth_day,identity,former_name,age,marital_status,native_place,ethnic_group,blood_type,occupation,address,height) values"+values.substring(0,values.length()-1));
+                    values.setLength(0);
+                }
             }
         }
-        jdbcTemplate.update("insert ignore into person(subject_id,name,phone,gender,birth_day,identity,former_name,age,marital_status,native_place,ethnic_group,blood_type,occupation,address,height) values"+values.substring(0,values.length()-1));
+        if(values.length()!=0){
+            jdbcTemplate.update("insert ignore into person(subject_id,name,phone,gender,birth_day,identity,former_name,age,marital_status,native_place,ethnic_group,blood_type,occupation,address,height) values"+values.substring(0,values.length()-1));
+        }
     }
 
     public void saveIdentityRelation(List<IdentityRelation> list){
@@ -75,11 +84,15 @@ public class DataSaver {
             values = values.append("("+'"'+list.get(i).getSubjectId()+'"'+","+'"'+list.get(i).getIdentity()+'"'+","+
                     '"'+list.get(i).getBiluSubjectId()+'"'+","+'"'+list.get(i).getCaseSubjectId()+'"'+"),");
             if(i%999 == 0){
-                jdbcTemplate.update("insert ignore into identity_relation(subject_id,identity,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
-                values.setLength(0);
+                if(values.length()!=0){
+                    jdbcTemplate.update("insert ignore into identity_relation(subject_id,identity,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+                    values.setLength(0);
+                }
             }
         }
-        jdbcTemplate.update("insert ignore into identity_relation(subject_id,identity,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+        if(values.length()!=0){
+            jdbcTemplate.update("insert ignore into identity_relation(subject_id,identity,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+        }
     }
 
     public void savePhoneRelation(List<PhoneRelation> list){
@@ -88,11 +101,15 @@ public class DataSaver {
             values = values.append("("+'"'+list.get(i).getSubjectId()+'"'+","+'"'+list.get(i).getPhoneNumber()+'"'+","+
                     '"'+list.get(i).getBiluSubjectId()+'"'+","+'"'+list.get(i).getCaseSubjectId()+'"'+"),");
             if(i%999 == 0){
-                jdbcTemplate.update("insert into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
-                values.setLength(0);
+                if(values.length()!=0){
+                    jdbcTemplate.update("insert into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+                    values.setLength(0);
+                }
             }
         }
-        jdbcTemplate.update("insert into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+        if(values.length()!=0){
+            jdbcTemplate.update("insert into phone_relation (subject_id,phone_number,bilu_subject_id,case_subject_id) values"+values.substring(0,values.length()-1));
+        }
     }
 
     public List<Person> removeDuplicatedId(List<Person> personList){

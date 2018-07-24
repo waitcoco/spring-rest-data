@@ -173,48 +173,40 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 }
             }
             try {
-                try{
                     if(relationList.size()!=0){
                         dataSaver.saveRelation(relationList);
                     }
-                }
-                catch(Exception e){
-                    logger.error("save relationlist error!"+ aCase.getSubjectId() + " " + e.getMessage());
-                }
+//                catch(Exception e){
+//                    logger.error("save relationlist error!"+ aCase.getSubjectId() + " " + e.getMessage());
+//                }
                 //relationRepository.save(relationList);
                 //logger.info(relationList.size() + " relations in case " + aCaseBase.getSubjectId());
 
-                try{
                     if(personList.size()!=0){
                         dataSaver.savePerson(personList);
                     }
-                }
-                catch(Exception e){
-                    logger.error("save personlist error!"+ aCase.getSubjectId() + " " + e.getMessage());
-                }
+//                catch(Exception e){
+//                    logger.error("save personlist error!"+ aCase.getSubjectId() + " " + e.getMessage());
+//                }
                 //personRepository.save(personList);
                 //logger.info(personList.size() + " persons in case " + aCaseBase.getSubjectId());
 
                 //phoneRelationRepository.save(phoneRelations);
-                try{
                     if(phoneRelations.size()!=0){
                         dataSaver.savePhoneRelation(phoneRelations);
                     }
-                }
-                catch(Exception e){
-                    logger.error("save phonerelation error!"+ aCase.getSubjectId() + " " + e.getMessage());
-                }
+//                catch(Exception e){
+//                    logger.error("save phonerelation error!"+ aCase.getSubjectId() + " " + e.getMessage());
+//                }
                 //logger.info(phoneRelations.size() + "phoneRelation in case" + aCaseBase.getSubjectId());
 
                 //identityRelationRepository.save(identityRelations);
-                try{
                     if(identityRelations.size()!=0){
                         dataSaver.saveIdentityRelation(identityRelations);
                     }
-                }
-                catch(Exception e){
-                    logger.error("save identityrelation error!"+ aCase.getSubjectId() + " " + e.getMessage());
-                }
+//                catch(Exception e){
+//                    logger.error("save identityrelation error!"+ aCase.getSubjectId() + " " + e.getMessage());
+//                }
                 //logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
 
                 aCase.setBilus(biluList);
