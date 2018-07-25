@@ -66,7 +66,7 @@ public class PublishController {
             esPublishEngine.createIndex();
         }
 
-        val caseList = mongoBiluRepo.getCaseBiluList();
+        val caseList = mongoBiluRepo.getCaseBiluList(mongoIds);
 
         for(val aCase: caseList) {
             JsonObject jsonObject = new JsonObject();

@@ -38,8 +38,9 @@ public class MongoBiluRepo {
         return collection.find().map(Document::toJson);
     }
 
-    public List<List<String>> getCaseBiluList() {
-        val allList = Lists.newArrayList(collection.find());
+    public List<List<String>> getCaseBiluList(Iterable<String> biluIds) {
+
+        val allList = Lists.newArrayList(biluIds==null? collection.find(): collection.find(in("_id", biluIds)));
 
         List<List<String>> cases = new ArrayList<>();
 
