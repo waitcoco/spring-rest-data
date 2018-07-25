@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mycompany.knowledge.miami.publish.engine.EsPublishEngine;
 import com.mycompany.knowledge.miami.publish.engine.PublishEngine;
+import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.repository.MongoBiluRepo;
+import com.mycompany.knowledge.miami.publish.repository.MongoCaseBasicRepo;
 import io.swagger.annotations.Api;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class PublishController {
     @Autowired
     MongoBiluRepo mongoBiluRepo;
 
+    @Autowired
+    MongoCaseBasicRepo mongoCaseBasicRepo;
+
     @GetMapping("/batchProcess")
     public String publish() {
         return publishEngine.publish();
@@ -37,13 +42,13 @@ public class PublishController {
     }
 
     @PostMapping("/ES")
-    public void processBatch( @RequestBody List<String> mongoIds) throws IOException {
+    public void processBatch( @RequestBody List<String> mongoIds) throws Exception {
         //uploadBiluToEs(mongoIds);
         uploadCaseToEs(mongoIds);
     }
 
     @PostMapping("/ES/full")
-    public void processBatch() throws IOException {
+    public void processBatch() throws Exception {
         //uploadBiluToEs(null);
         clearES();
         uploadCaseToEs(null);
@@ -56,7 +61,7 @@ public class PublishController {
         }
     }
 
-    private void uploadCaseToEs(List<String> mongoIds) throws IOException {
+    private void uploadCaseToEs(List<String> mongoIds) throws Exception {
         if (!esPublishEngine.indexExists()) {
             esPublishEngine.createIndex();
         }
@@ -84,9 +89,19 @@ public class PublishController {
 
                 arr.add(json);
             }
-            jsonObject.addProperty("caseId", caseId);
-            jsonObject.addProperty("caseName", caseName);
+            jsonObject.addProperty("AJBH", caseId);
+            jsonObject.addProperty("AJMC", caseName);
             jsonObject.addProperty("caseGuid", caseGuid);
+
+            if(caseId!= null && !caseId.isEmpty()) {
+                Case basicInfo = mongoCaseBasicRepo.getCaseByAJBH(caseId);
+                if(basicInfo.getAJMC() != null) {
+                    jsonObject.addProperty("AJMC", basicInfo.getAJMC());
+                    jsonObject.addProperty("AJLX", basicInfo.getAJLX());
+                    jsonObject.addProperty("SLSJ", basicInfo.getSLSJ());
+                    jsonObject.addProperty("JYAQ", basicInfo.getJYAQ());
+                }
+            }
 
             jsonObject.add("bilus", arr);
 
