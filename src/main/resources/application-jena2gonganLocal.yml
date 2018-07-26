@@ -15,7 +15,6 @@ spring:
     mongodb:
       uri: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie
   datasource:
-
     url: jdbc:mysql://localhost:6603/rizhaogongan
     username: root
     password: 123456
@@ -38,9 +37,12 @@ miami:
     mongodb:
       database: zhinengtiaojie
       collection:
-        bilu: tiaojieDocInfoLocal
+        bilu: docContainerinfo
     elasticsearch:
       host: http://localhost:9200
+      index: bilutest
+      type: doc
+      batchSize: 1000
 
 mongo:
   mongodburi: mongodb://tahiti:Qs7UDDUliY@47.104.8.27:27101/zhinengtiaojie

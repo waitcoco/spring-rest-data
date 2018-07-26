@@ -1,9 +1,13 @@
 package com.mycompany.knowledge.miami.publish.controller;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mycompany.knowledge.miami.publish.engine.EsPublishEngine;
 import com.mycompany.knowledge.miami.publish.engine.PublishEngine;
+import com.mycompany.knowledge.miami.publish.model.gongan.Case;
 import com.mycompany.knowledge.miami.publish.repository.MongoBiluRepo;
+import com.mycompany.knowledge.miami.publish.repository.MongoCaseBasicRepo;
 import io.swagger.annotations.Api;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,9 @@ public class PublishController {
     @Autowired
     MongoBiluRepo mongoBiluRepo;
 
+    @Autowired
+    MongoCaseBasicRepo mongoCaseBasicRepo;
+
     @GetMapping("/batchProcess")
     public String publish() {
         return publishEngine.publish();
@@ -35,13 +42,16 @@ public class PublishController {
     }
 
     @PostMapping("/ES")
-    public void processBatch( @RequestBody List<String> mongoIds) throws IOException {
-        uploadBiluToEs(mongoIds);
+    public void processBatch( @RequestBody List<String> mongoIds) throws Exception {
+        //uploadBiluToEs(mongoIds);
+        uploadCaseToEs(mongoIds);
     }
 
     @PostMapping("/ES/full")
-    public void processBatch() throws IOException {
-        uploadBiluToEs(null);
+    public void processBatch() throws Exception {
+        //uploadBiluToEs(null);
+        clearES();
+        uploadCaseToEs(null);
     }
 
     @PostMapping("/ES/clear")
@@ -49,6 +59,60 @@ public class PublishController {
         if (esPublishEngine.indexExists()) {
             esPublishEngine.deleteIndex();
         }
+    }
+
+    private void uploadCaseToEs(List<String> mongoIds) throws Exception {
+        if (!esPublishEngine.indexExists()) {
+            esPublishEngine.createIndex();
+        }
+
+        val caseList = mongoBiluRepo.getCaseBiluList(mongoIds);
+
+        for(val aCase: caseList) {
+            JsonObject jsonObject = new JsonObject();
+            String caseId = null, caseName = null, caseGuid = null;
+            val iter = aCase.iterator();
+
+            JsonArray arr = new JsonArray();
+
+            while(iter.hasNext()) {
+                val json = new JsonParser().parse(iter.next()).getAsJsonObject();
+
+                if(json.has("groupName")) {
+                    caseName = json.get("groupName").getAsString();
+                }
+                caseGuid = json.get("groupGuid").getAsString();
+
+                if(json.has("groupId")) {
+                    caseId = json.get("groupId").getAsString();
+                }
+
+                arr.add(json);
+            }
+            jsonObject.addProperty("AJBH", caseId);
+            jsonObject.addProperty("AJMC", caseName);
+            jsonObject.addProperty("caseGuid", caseGuid);
+
+            if(caseId!= null && !caseId.isEmpty()) {
+                Case basicInfo = mongoCaseBasicRepo.getCaseByAJBH(caseId);
+                if(basicInfo.getAJMC() != null) {
+                    jsonObject.addProperty("AJMC", basicInfo.getAJMC());
+                    jsonObject.addProperty("AJLX", basicInfo.getAJLX());
+                    jsonObject.addProperty("SLSJ", basicInfo.getSLSJ());
+                    jsonObject.addProperty("JYAQ", basicInfo.getJYAQ());
+                }
+            }
+
+            jsonObject.add("bilus", arr);
+
+            try {
+                esPublishEngine.addJsonDocument(caseGuid, jsonObject.toString());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        esPublishEngine.flush();
     }
 
     private void uploadBiluToEs(List<String> mongoIds) throws IOException {
