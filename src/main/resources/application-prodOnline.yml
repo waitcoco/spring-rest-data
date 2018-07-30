@@ -1,6 +1,6 @@
 jena:
   modelName: biluFusion
-  fusekiURI: http://172.19.9.110/knowledge
+  fusekiURI: http://172.19.14.56/knowledge
 
 spring:
   datasource:
