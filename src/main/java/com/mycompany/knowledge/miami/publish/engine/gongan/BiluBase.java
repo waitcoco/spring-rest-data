@@ -14,6 +14,7 @@ public class BiluBase {
     private String biluId;
     private String name;
     private String content;
+    private String crimeComponent;
 
     private List<PersonBase> person = new ArrayList<>();
     private Map<String, String> phones = new HashMap<>();

@@ -16,12 +16,17 @@ public class Bilu {
     @NonNull
     private String subjectId;
     private String name;
-    @Column(length = 10000)
+    @Column(columnDefinition = "text")
+    private String crimeComponent;
+    @Column(columnDefinition = "text")
     private String content;
     private String biluId;
-    @Column(length = 5000)
+    @Column(columnDefinition = "text")
     private String phones;
     private String bankcards;
+    @Column(columnDefinition = "text")
+    private String tags;
+
 //    @ManyToMany(mappedBy = "bilus", cascade = CascadeType.ALL)
 //    private List<Person> persons;
     @ManyToOne

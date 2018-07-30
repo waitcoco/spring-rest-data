@@ -125,6 +125,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 bilu.setACase(aCase);
                 bilu.setBankcards(gson.toJson(biluBase.getBankCards()));
                 bilu.setPhones(gson.toJson(biluBase.getPhones()));
+                bilu.setTags(gson.toJson(biluBase.getTags()));
+                bilu.setCrimeComponent(biluBase.getCrimeComponent());
                 biluList.add(bilu);
 
                 for (val personBase : biluBase.getPerson()) {
@@ -273,6 +275,20 @@ public class JenaGonganPublishEngine implements PublishEngine{
         List<String> bilu_content_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:common.document.contentStream");
         biluBase.setContent(bilu_content_list.size() > 0 ? bilu_content_list.get(0) : "");
 
+        //bilu crimeComponent
+        List<String> bilu_crime_component_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "gongan:gongan.bilu.crimeComponentString");
+        biluBase.setCrimeComponent(bilu_crime_component_list.size() > 0 ? bilu_crime_component_list.get(0) : "");
+        try{
+            int length = bilu_crime_component_list.get(0).getBytes("UTF-8").length;
+            System.out.println("crime_component's  length" + length);
+        }
+        catch (Exception e){
+
+        }
+
+        //bilu tags
+        List<String> bilu_tags_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.tag");
+        biluBase.setTags(bilu_tags_list);
         // set personBases
         val entities = Lists.newArrayList(fusekiJenaLibrary.getStatementsBySP(model, resource, "gongan:gongan.bilu.entity")).stream().map(s -> s.getResource().toString()).distinct().collect(Collectors.toList());
         val persons = Lists.newArrayList(fusekiJenaLibrary.getStatementsByPOValue(model, "common:type.object.type", "common:person.person")).stream().map(s -> s.getSubject().toString()).distinct().collect(Collectors.toList());
