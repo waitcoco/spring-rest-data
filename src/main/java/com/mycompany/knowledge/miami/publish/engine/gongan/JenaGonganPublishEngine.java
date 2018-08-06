@@ -12,9 +12,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JenaGonganPublishEngine implements PublishEngine{
@@ -41,6 +39,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
     public FusekiJenaLibrary fusekiJenaLibrary;
     private Logger logger = Logger.getLogger(JenaGonganPublishEngine.class);
     private String inputModelName;
+    private Gson gson = new Gson();
     public JenaGonganPublishEngine(String fusekiURI, String modelName) {
         this.inputModelName = modelName;
         this.fusekiJenaLibrary = new FusekiJenaLibrary(fusekiURI);
@@ -105,6 +104,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
 
             logger.info(aCaseBase.getBilus().size() + " bilus in case " + aCaseBase.getSubjectId());
             val aCase = new Case();
+            Map<String, String> connection = new HashMap<>();
             aCase.setSubjectId(aCaseBase.getSubjectId());
             aCase.setName(aCaseBase.getCaseName());
             aCase.setCaseId(aCaseBase.getCaseId());
@@ -114,10 +114,16 @@ public class JenaGonganPublishEngine implements PublishEngine{
             List<Person> personList = new ArrayList<>();
             List<PhoneRelation> phoneRelations = new ArrayList<>();
             List<IdentityRelation> identityRelations = new ArrayList<>();
-
             for (val biluBase : aCaseBase.getBilus()) {
                 val bilu = new Bilu();
-                Gson gson = new Gson();
+                for (String pSubjectId : biluBase.getConnections().keySet()) {
+                    if (!connection.containsKey(pSubjectId))
+                        connection.put(pSubjectId, biluBase.getConnections().get(pSubjectId));
+                    else {
+                        if (!connection.get(pSubjectId).contains(connection.get(pSubjectId)))
+                            connection.put(pSubjectId, biluBase.getConnections().get(pSubjectId) + "；" + connection.get(pSubjectId));
+                    }
+                }
                 bilu.setContent(biluBase.getContent());
                 bilu.setName(biluBase.getName());
                 bilu.setBiluId(biluBase.getBiluId());
@@ -127,6 +133,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                 bilu.setPhones(gson.toJson(biluBase.getPhones()));
                 bilu.setTags(gson.toJson(biluBase.getTags()));
                 bilu.setCrimeComponent(biluBase.getCrimeComponent());
+                bilu.setConnection(gson.toJson(biluBase.getConnections()));
                 biluList.add(bilu);
 
                 for (val personBase : biluBase.getPerson()) {
@@ -199,7 +206,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
                         dataSaver.saveIdentityRelation(identityRelations);
                     }
                 //logger.info(identityRelations.size() + "identityRelation in case" + aCaseBase.getSubjectId());
-
+                aCase.setConnection(gson.toJson(connection));
                 aCase.setBilus(biluList);
                 try{
                     enrichCaseFromMongo(aCase);
@@ -222,8 +229,7 @@ public class JenaGonganPublishEngine implements PublishEngine{
     private void enrichCaseFromMongo(Case acase) throws Exception{
         // todo
         // 从mongo 里面拿case basic info, 然后塞到Case里面
-        Case mongoCase = new Case();
-        mongoCase = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
+        Case mongoCase = mongoCaseBasicRepo.getCaseByAJBH(acase.getCaseId());
         acase.setAJBH(mongoCase.getAJBH());
         acase.setAJLX(mongoCase.getAJLX());
         acase.setAJLXName(mongoCase.getAJLXName());
@@ -245,8 +251,8 @@ public class JenaGonganPublishEngine implements PublishEngine{
     }
 
     private void enrichPerson(Person person) throws Exception{
-        Person basicPersonInfo = new Person();
-        basicPersonInfo = personInfoGetter.getPersonByIdentity(person.getIdentity());
+
+        Person basicPersonInfo = personInfoGetter.getPersonByIdentity(person.getIdentity());
         person.setAddress(basicPersonInfo.getAddress());
         person.setAge(basicPersonInfo.getAge());
         person.setBloodType(basicPersonInfo.getBloodType());
@@ -264,7 +270,11 @@ public class JenaGonganPublishEngine implements PublishEngine{
         biluBase.setSubjectId(resource.toString());
 
         //bilu subjectId
-        List<String> bilu_id_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.subjectId");
+//        List<String> bilu_subject_id_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.subjectId");
+//        biluBase.setBiluId(bilu_subject_id_list.size() > 0 ? bilu_subject_id_list.get(0) : "");
+
+        //bilu id
+        List<String> bilu_id_list = fusekiJenaLibrary.getStringValueBySP(model, resource, "common:type.object.id");
         biluBase.setBiluId(bilu_id_list.size() > 0 ? bilu_id_list.get(0) : "");
 
         //bilu name

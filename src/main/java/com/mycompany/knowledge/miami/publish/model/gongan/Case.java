@@ -41,7 +41,8 @@ public class Case {
     private String SLSJ;
     private String XYR_XM;
     private String ZBR_SFZH;
-
+    @Column(columnDefinition = "text")
+    private String connection;
     // todo
     // @jinzhao
 

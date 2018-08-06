@@ -26,7 +26,8 @@ public class Bilu {
     private String bankcards;
     @Column(columnDefinition = "text")
     private String tags;
-
+    @Column(columnDefinition = "text")
+    private String connection;
 //    @ManyToMany(mappedBy = "bilus", cascade = CascadeType.ALL)
 //    private List<Person> persons;
     @ManyToOne
